@@ -1,0 +1,47 @@
+/* Diseño para celu (se activa con la clase .mob): una sola columna, sin escalar */
+html.mob,html.mob body{height:auto;overflow-x:hidden;overflow-y:auto;-webkit-text-size-adjust:100%}
+html.mob #stage{position:relative;left:auto;top:auto;width:100%;max-width:640px;margin:0 auto;height:auto;transform:none!important;box-shadow:none;overflow:visible;padding-bottom:24px}
+html.mob .screw{display:none}
+html.mob .top{position:relative;left:auto;top:auto;width:auto;height:auto;margin:0 12px;padding:14px 0 0;flex-wrap:wrap;gap:6px}
+html.mob .logo{width:100%;height:auto}
+html.mob .model{display:none}
+html.mob .main{position:relative;z-index:0;left:auto;top:auto;width:auto;height:auto;display:flex;flex-direction:column;gap:14px;padding:12px}
+html.mob .right{display:contents}
+html.mob #dig{order:1;margin-top:0;height:78px;font-size:40px}
+html.mob .vcol{order:2}
+html.mob #fmt{order:5;margin-top:0}
+html.mob #dl1{order:6;margin-top:0;height:64px;font-size:26px}
+html.mob .tray{order:7;height:130px;padding:42px 12px 12px}
+html.mob .fkeys{order:3;grid-template-columns:repeat(3,1fr);gap:10px}
+html.mob .fkeys .key{height:50px;font-size:15px}
+html.mob .lcdb{order:4;height:54vh;min-height:360px;max-height:470px}
+html.mob .right>.trio:not(#fmt){order:8;margin-top:0}
+html.mob .right>.bezel{order:9}
+html.mob .crt{height:auto;padding:10px;border-radius:22px}
+html.mob .scr{height:auto;aspect-ratio:16/9;border-radius:24px/18px}
+html.mob .vctl{margin-top:12px;gap:10px}
+html.mob .vctl .key{height:48px;font-size:16px}
+html.mob .pads{grid-template-columns:repeat(4,1fr);gap:10px;padding:10px}
+html.mob .pad{width:100%;height:auto;aspect-ratio:1;font-size:11px;padding:5px}
+html.mob .trio .key{height:50px;font-size:16px}
+html.mob .tl{font-size:16px;top:10px}
+html.mob .f{max-width:78vw;font-size:15px}
+html.mob .files{gap:14px}
+html.mob .lcd{font-size:22px}
+html.mob .t{font-size:30px}
+html.mob .fgrid{grid-template-columns:105px 1fr}
+html.mob .lcd input,html.mob .lcd select{font-size:16px}
+
+/* ---- pestañas ---- */
+html.mob #stage{padding-bottom:96px}
+html.mob #tabbar{position:fixed;left:0;right:0;bottom:0;z-index:60;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));background:linear-gradient(#2a2a29,#141413);border-top:2px solid #0b0b0a;box-shadow:0 -6px 14px rgba(0,0,0,.5)}
+html.mob #tabbar .key{height:50px;font-size:14px;letter-spacing:.4px;padding:0 2px}
+html.mob #toast{position:fixed;left:12px;right:12px;bottom:calc(82px + env(safe-area-inset-bottom,0px));z-index:70;padding:10px 12px;background:#a9c08a;color:#1a2314;border:3px solid #1a2314;border-radius:8px;font:20px LCD,monospace;text-transform:uppercase;box-shadow:0 8px 20px rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:opacity .2s}
+html.mob #toast.show{opacity:1}
+html.mob #toast.err{background:#d9a79a;color:#3a0d05;border-color:#3a0d05}
+html.mob[data-tab="cavar"] :is(.tab-datos,.tab-pads,.tab-bajadas){display:none!important}
+html.mob[data-tab="datos"] :is(.tab-cavar,.tab-pads,.tab-bajadas){display:none!important}
+html.mob[data-tab="pads"] :is(.tab-cavar,.tab-datos,.tab-bajadas){display:none!important}
+html.mob[data-tab="bajadas"] :is(.tab-cavar,.tab-datos,.tab-pads){display:none!important}
+html.mob[data-tab="datos"] .lcdb{height:62vh;max-height:none}
+html.mob #stage{min-height:100vh}

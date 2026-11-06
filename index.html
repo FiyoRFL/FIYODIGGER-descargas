@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<link rel="preconnect" href="https://www.youtube-nocookie.com">
+<link rel="dns-prefetch" href="https://i.ytimg.com">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#161615">
+<script src="version.js"></script>
+<script src="i18n.js"></script>
+<script>/* PC (Electron): nada extra. Celu (Android): piezas de Android. Safari u otro navegador: FIYODIGGER Lite */
+if (window.Android) document.write('<link rel="stylesheet" href="android.css"><script src="lame.min.js"><\/script><script src="nacl.min.js"><\/script><script src="android.js"><\/script><script src="mob.js"><\/script>');
+else if (!window.fd) document.write('<link rel="stylesheet" href="android.css"><script src="web.js"><\/script><script src="mob.js"><\/script>');</script>
+<title>FIYODIGGER</title>
+<style>
+@font-face{font-family:LCD;src:url(vt323.woff2)}
+@font-face{font-family:RC;src:url(rc-700.woff2);font-weight:700}
+@font-face{font-family:RC;src:url(rc-400.woff2);font-weight:400}
+:root{--lcd:#a9bd8c;--lcd2:#93a977;--lcdink:#19220f;--ink:#1d1c18;--label:#d9d4c3;--hot:#e0412f;--lcdhd:#131a0d;--lcdbd:#0e130a}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:#161615}
+html:not(.mob) body{background:linear-gradient(rgba(14,14,13,.6),rgba(14,14,13,.6)),url(metal.jpg) center/cover #1c1c1b}
+body{color:var(--label);font:700 14px/1.2 RC,"Arial Narrow",Arial,sans-serif}
+#stage{position:absolute;left:50%;top:50%;width:1600px;height:1000px;transform-origin:center;background:#222;overflow:hidden}
+#stage::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.62) 100%),var(--mat,url(scratch.png) center/cover),url(metal.jpg) center/cover}
+#stage::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;box-shadow:inset 0 0 0 4px #121211,inset 0 0 0 7px #7c7e7f,inset 0 0 0 10px #222221}
+.screw{position:absolute;width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 35% 30%,var(--sa,#929493),var(--sb,#4a4b4a) 60%,var(--sc,#2a2a29));box-shadow:inset 0 0 0 1px #151514,0 1px 1px rgba(255,255,255,.2),0 3px 4px rgba(0,0,0,.75)}
+.screw::before,.screw::after{content:"";position:absolute;left:50%;top:50%;background:#1b1b1a;transform:translate(-50%,-50%) rotate(var(--r,20deg))}
+.screw::before{width:16px;height:3px}.screw::after{width:3px;height:16px}
+.s1{left:26px;top:26px}.s2{right:26px;top:26px;--r:-35deg}.s3{left:26px;bottom:26px;--r:60deg}.s4{right:26px;bottom:26px;--r:10deg}
+.top{position:absolute;left:56px;top:26px;width:1488px;height:118px;border-bottom:3px solid #111;box-shadow:0 1px 0 rgba(255,255,255,.14);display:flex;justify-content:space-between;align-items:flex-end;padding:0 8px 12px}
+.logo{height:66px;width:auto;display:block;filter:drop-shadow(0 3px 3px rgba(0,0,0,.65))}
+.model{font:700 22px Consolas,"Courier New",monospace;letter-spacing:3px;text-transform:uppercase;text-shadow:0 1px 0 #000}
+.main{position:absolute;left:56px;top:160px;width:1488px;height:804px;display:grid;grid-template-columns:508px 460px 440px;grid-template-rows:480px 64px 1fr;gap:26px 40px;grid-template-areas:"lcd vid right" "keys keys right" "tray tray right"}
+.bezel{background:linear-gradient(#171716,#222221);padding:14px;border-radius:16px;border:2px solid #101010;box-shadow:inset 0 3px 10px #000,inset 0 -1px 0 rgba(255,255,255,.07),0 1px 0 rgba(255,255,255,.17),0 -1px 0 rgba(0,0,0,.55)}
+.lcdb{grid-area:lcd;height:480px}
+.lcd{position:relative;height:100%;background:linear-gradient(180deg,var(--lcd),var(--lcd2));color:var(--lcdink);font:26px/1 LCD,"Lucida Console",monospace;text-transform:uppercase;display:flex;flex-direction:column;border-radius:7px;border:2px solid var(--lcdbd);box-shadow:inset 0 0 34px rgba(10,20,5,.5),inset 0 2px 5px rgba(0,0,0,.45);overflow:hidden}
+.lcd::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(116deg,rgba(255,255,255,.22) 0,rgba(255,255,255,.05) 33%,transparent 34%),repeating-linear-gradient(0deg,rgba(0,0,0,.07) 0 1px,transparent 1px 3px)}
+.hd{background:var(--lcdhd);color:var(--lcd);padding:3px 12px;display:flex;justify-content:space-between}
+.page{display:none;padding:10px 14px;flex:1;overflow:auto;min-height:0}
+.page.on{display:block}
+.ft{border-top:2px solid var(--lcdink);padding:4px 12px;min-height:34px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ft.err{background:var(--lcdink);color:var(--lcd)}
+.t{font-size:40px;line-height:.95;margin-bottom:8px;overflow-wrap:anywhere}
+.l{margin:3px 0}.dim{opacity:.7}
+.fgrid{display:grid;grid-template-columns:130px 1fr;gap:6px 10px;align-items:center}
+.lcd input,.lcd select{font:inherit;color:inherit;background:transparent;border:0;border-bottom:2px solid var(--lcdink);border-radius:0;padding:0 2px;width:100%;text-transform:uppercase;outline:0}
+.lcd input:focus,.lcd select:focus{background:var(--lcdink);color:var(--lcd)}
+.lcd option{background:var(--lcd);color:var(--lcdink)}
+.lcd input[type=checkbox]{width:20px;height:20px;accent-color:var(--lcdink)}
+.row{display:flex;gap:8px;width:100%}.fgrid .row input{min-width:0}
+.li{display:flex;justify-content:space-between;gap:8px;width:100%;text-align:left;font:inherit;color:inherit;text-transform:uppercase;background:none;border:0;padding:1px 4px;cursor:pointer}
+.li:hover,.li:focus-visible{background:var(--lcdink);color:var(--lcd);outline:0}
+.li span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cf{display:flex;flex-wrap:wrap;align-items:center;min-width:0}
+.cf input{width:auto;flex:1;min-width:110px}
+.chip,.mode{font:inherit;text-transform:uppercase;cursor:pointer;padding:0 7px;margin:0 6px 3px 0;line-height:1.1}
+.chip{background:var(--lcdink);color:var(--lcd);border:2px solid var(--lcdink)}
+.mode{background:transparent;color:inherit;border:2px solid var(--lcdink)}
+.mode.not{background:var(--lcdink);color:var(--lcd)}
+#dd::-webkit-scrollbar,.page::-webkit-scrollbar,#dinfo::-webkit-scrollbar{width:18px}
+#dd::-webkit-scrollbar-track,.page::-webkit-scrollbar-track,#dinfo::-webkit-scrollbar-track{background:rgba(0,0,0,.18);border-left:2px solid var(--lcdink)}
+#dd::-webkit-scrollbar-thumb,.page::-webkit-scrollbar-thumb,#dinfo::-webkit-scrollbar-thumb{min-height:44px;background:var(--lcdink);border:3px solid var(--lcd);border-radius:6px}
+#dd{position:fixed;z-index:1000;background:var(--lcd);color:var(--lcdink);border:3px solid var(--lcdbd);border-radius:5px;font-family:LCD,monospace;line-height:1;text-transform:uppercase;overflow-y:scroll;box-shadow:0 12px 26px rgba(0,0,0,.7)}
+#dd[hidden]{display:none}
+.dd-i{display:flex;align-items:center;width:100%;text-align:left;font:inherit;color:inherit;background:none;border:0;padding:.14em .45em;cursor:pointer;text-transform:uppercase}
+.dd-i::before{content:"";flex:none;width:.46em;height:.46em;border:2px solid currentColor;margin-right:.45em}
+.dd-i.sel::before{background:currentColor}
+.dd-i:hover,.dd-i.cur{background:var(--lcdink);color:var(--lcd)}
+.dd-empty{padding:6px 10px;opacity:.7}
+.key{display:grid;place-items:center;text-align:center;font:700 20px RC,"Arial Narrow",Arial,sans-serif;letter-spacing:.8px;text-transform:uppercase;color:var(--ink);background:url(grain.png),linear-gradient(#e3dccb,#bdb5a1);border:1px solid #5b574a;border-radius:8px;padding:0 8px;cursor:pointer;box-shadow:0 5px 0 #5d594b,0 9px 11px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.75),inset 0 -3px 4px rgba(0,0,0,.15);text-shadow:0 1px 0 rgba(255,255,255,.35);transition:transform .05s}
+.key:active,.key.on{transform:translateY(4px);box-shadow:0 1px 0 #5d594b,0 2px 4px rgba(0,0,0,.5),inset 0 3px 6px rgba(0,0,0,.3)}
+.key.on{background:url(grain.png),linear-gradient(#3a3a39,#232322);color:#a9a597;text-shadow:none;border-color:#0d0d0c}
+.key:focus-visible,.pad:focus-visible,.fx:focus-visible{outline:2px solid var(--hot);outline-offset:3px}
+.fkeys{grid-area:keys;display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.fkeys .key{height:64px}
+.vcol{grid-area:vid}
+.crt{height:340px;padding:20px;border-radius:34px;background:linear-gradient(#1c1c1b,#0e0e0d);border:3px solid #0a0a09;box-shadow:inset 0 4px 12px #000,0 1px 0 rgba(255,255,255,.18),0 -1px 0 rgba(0,0,0,.6)}
+.scr{position:relative;width:100%;height:100%;border-radius:40px/32px;background:#000;overflow:hidden;display:grid;place-items:center;box-shadow:0 0 0 5px #070707,inset 0 0 44px #000}
+.scr iframe{display:block;width:100%;aspect-ratio:16/9;border:0;background:#000}
+.scr iframe#player2{position:absolute;left:0;top:50%;transform:translateY(-50%);opacity:0;pointer-events:none}
+.scr::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;background:radial-gradient(ellipse at 28% 16%,rgba(255,255,255,.2),transparent 48%),radial-gradient(ellipse at center,transparent 58%,rgba(0,0,0,.55) 100%)}
+.vctl{display:flex;gap:18px;margin-top:24px}.vctl .key{flex:1;height:56px;font-size:19px}
+.tray{grid-area:tray;position:relative;border-radius:16px;background:linear-gradient(#131312,#1d1d1c);border:2px solid #0b0b0a;box-shadow:inset 0 5px 14px #000,0 1px 0 rgba(255,255,255,.15);padding:50px 20px 18px;overflow:hidden}
+.tl{position:absolute;top:12px;left:0;right:0;text-align:center;font:700 22px RC;letter-spacing:2px;text-shadow:0 1px 0 #000}
+.files{display:flex;gap:22px;align-items:center;height:100%;overflow-x:auto;overflow-y:hidden;padding-top:18px;scrollbar-width:none}
+.files::-webkit-scrollbar{display:none}
+.empty{opacity:.55;letter-spacing:1.5px;font-size:16px}
+.f{position:relative;flex:none;display:flex;align-items:center;gap:14px;max-width:470px;padding:12px 14px;border-radius:7px;background:url(grain.png),linear-gradient(#e6dfcd,#c4bca8);color:var(--ink);font:400 18px RC,sans-serif;cursor:grab;box-shadow:0 4px 0 #6a6555,0 8px 10px rgba(0,0,0,.6)}
+.f::before{content:"";position:absolute;left:16%;right:16%;top:-14px;height:16px;border-radius:12px 12px 0 0;background:#e6dfcd;box-shadow:0 -2px 3px rgba(0,0,0,.35)}
+.f .fn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fx{flex:none;border:0;background:none;color:#5d594b;font:700 22px/1 RC;cursor:pointer;padding:0 2px}.fx:hover{color:#a8261a}
+.right{grid-area:right}
+.pads{display:grid;grid-template-columns:repeat(4,92px);gap:18px 14px;padding:16px 14px}
+.cell{position:relative}
+.led{position:absolute;left:10px;bottom:-14px;width:8px;height:8px;border-radius:50%;background:#4d1713;box-shadow:inset 0 1px 1px rgba(255,255,255,.3),0 0 0 1px #0d0d0c;pointer-events:none}
+.cell:nth-child(4n+2) .led,.cell:nth-child(4n+4) .led{background:#6a5f1c}
+.cell:nth-child(4n+3) .led{background:#214b21}
+.cell.lit .led{background:var(--led,#ff3b22);box-shadow:0 0 10px 3px rgba(var(--ledRGB,255,60,30),.8),0 0 0 1px #0d0d0c}
+.cell.lit::after{content:"";position:absolute;inset:0;border-radius:11px;pointer-events:none;background:radial-gradient(circle at 20% 92%,rgba(var(--ledRGB,255,55,30),.6),transparent 66%);mix-blend-mode:screen}
+.pad{position:relative;width:92px;height:92px;border-radius:11px;border:2px solid #111110;background:url(wear.png) var(--wx,0) var(--wy,0)/180px,url(grain.png),linear-gradient(150deg,var(--padA,#4d4d4a),var(--padB,#2b2b29));color:var(--padTx,#ddd9c9);font:700 14px/1.05 RC,sans-serif;display:flex;align-items:flex-end;padding:8px 7px;min-width:0;overflow:hidden;cursor:pointer;text-align:left;text-transform:uppercase;box-shadow:0 5px 0 #0b0b0a,0 9px 11px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,255,255,.2),inset 0 -7px 11px rgba(0,0,0,.4);transition:transform .05s}
+.pad .n{position:absolute;top:7px;left:9px;opacity:.7;font-size:15px}
+.pad:active,.cell.hit .pad{transform:translateY(4px);box-shadow:0 1px 0 #0b0b0a,0 2px 4px rgba(0,0,0,.6),inset 0 2px 9px rgba(0,0,0,.55);background-image:url(wear.png),url(grain.png),linear-gradient(150deg,var(--hitA,#d4513a),var(--hitB,#942a1b));color:#fff}
+.cell.lit .pad{box-shadow:0 5px 0 #0b0b0a,0 9px 11px rgba(0,0,0,.65),0 0 30px rgba(var(--ledRGB,255,50,30),.35),inset 0 1px 0 rgba(255,255,255,.2),inset 0 -7px 11px rgba(0,0,0,.4)}
+.pads.editing .pad{outline:2px dashed #ddd7c4;outline-offset:-6px}
+.key.dig,.key.get{background:url(grain.png),linear-gradient(var(--k1,#b93a2d),var(--k2,#8a2219));color:var(--kT,#f3e5d8);border-color:var(--kE,#4a0e09);box-shadow:0 5px 0 var(--kE,#4a0e09),0 10px 13px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,205,195,.5),inset 0 -3px 6px rgba(0,0,0,.25);text-shadow:0 -1px 0 rgba(0,0,0,.45);letter-spacing:2px;width:100%}
+.key.dig{height:84px;margin-top:24px;font-size:46px}
+.key.get{height:76px;margin-top:16px;font-size:32px}
+.key.dig:active,.key.get:active{transform:translateY(4px);box-shadow:0 1px 0 var(--kE,#4a0e09),0 3px 5px rgba(0,0,0,.5),inset 0 2px 7px rgba(0,0,0,.4)}
+.key.get.arm{background:url(grain.png),linear-gradient(var(--lcd),var(--lcd2));color:var(--lcdink);border-color:#38461f;box-shadow:0 5px 0 #38461f,0 10px 13px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.55);text-shadow:0 1px 0 rgba(255,255,255,.35);cursor:grab;user-select:none}
+.key.get:disabled{opacity:.65;cursor:wait}
+.trio{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px}.trio .key{height:54px}
+html.cs-black #stage::before{filter:brightness(.5) contrast(1.2)}
+html.cs-cream #stage::before{filter:sepia(.9) brightness(1.75) contrast(.85) saturate(1.15)}
+html.cs-olive #stage::before{filter:sepia(1) hue-rotate(38deg) saturate(1.5) brightness(.85)}
+html.cs-cream{--label:#2c2a22}
+html.cs-cream .logo{filter:brightness(.18) contrast(1.2) drop-shadow(0 1px 0 rgba(255,255,255,.5))}
+html.cs-cream .model,html.cs-cream .tl{text-shadow:0 1px 0 rgba(255,255,255,.45)}
+html.lcd-amber{--lcd:#e6b34a;--lcd2:#cf9524;--lcdink:#2b1a00;--lcdhd:#241500;--lcdbd:#140c00}
+html.lcd-blue{--lcd:#9fd0ea;--lcd2:#79b2d6;--lcdink:#06202e;--lcdhd:#031722;--lcdbd:#020f17}
+/* --- Carcasas nuevas (tinte sobre el metal) --- */
+html.cs-navy #stage::before{filter:sepia(1) hue-rotate(175deg) saturate(2.2) brightness(.62)}
+html.cs-wine #stage::before{filter:sepia(1) hue-rotate(-35deg) saturate(2.6) brightness(.5)}
+html.cs-white #stage::before{filter:grayscale(1) brightness(2.1) contrast(.62)}
+html.cs-char #stage::before{filter:grayscale(1) brightness(.72) contrast(1.1)}
+html.cs-orange #stage::before{filter:sepia(1) hue-rotate(-12deg) saturate(3.2) brightness(.9)}
+html.cs-teal #stage::before{filter:sepia(1) hue-rotate(125deg) saturate(1.9) brightness(.72)}
+html.cs-violet #stage::before{filter:sepia(1) hue-rotate(225deg) saturate(1.8) brightness(.6)}
+html.cs-sand #stage::before{filter:sepia(.75) brightness(1.35) contrast(.9) saturate(.9)}
+/* carcasas claras: letras y logo oscuros */
+html.cs-white,html.cs-sand,html.mat-wood{--label:#2c2a22}
+html.cs-white .logo,html.cs-sand .logo{filter:brightness(.18) contrast(1.2) drop-shadow(0 1px 0 rgba(255,255,255,.5))}
+html.cs-white .model,html.cs-white .tl,html.cs-sand .model,html.cs-sand .tl{text-shadow:0 1px 0 rgba(255,255,255,.45)}
+/* --- Materiales --- */
+html.mat-brushed{--mat:url(scratch.png) center/cover,repeating-linear-gradient(90deg,rgba(255,255,255,.07) 0 1px,transparent 1px 3px,rgba(0,0,0,.08) 3px 4px,transparent 4px 7px)}
+html.mat-wood #stage::before{filter:none;background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.6) 100%),url(scratch.png) center/cover,repeating-linear-gradient(92deg,rgba(60,28,10,.35) 0 2px,transparent 2px 9px,rgba(255,220,170,.06) 9px 11px,transparent 11px 23px),repeating-radial-gradient(ellipse 900px 60px at 30% 40%,#8a5a34 0 14px,#6f4425 14px 30px,#9b6a40 30px 44px),#7a4b2a}
+html.mat-wood{--label:#f1e3c8}
+html.mat-wood .model,html.mat-wood .tl{text-shadow:0 1px 0 #000}
+html.mat-carbon #stage::before{filter:none;background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.7) 100%),url(scratch.png) center/cover,repeating-linear-gradient(45deg,#1c1d1f 0 6px,#26282b 6px 12px),repeating-linear-gradient(-45deg,rgba(255,255,255,.04) 0 6px,rgba(0,0,0,.25) 6px 12px),#18191a}
+html.mat-rubber{--mat:url(scratch.png) center/cover,radial-gradient(rgba(0,0,0,.35) 1px,transparent 1.5px) 0 0/6px 6px}
+/* --- Materiales que ya tenia la APK --- */
+html.mat-alu #stage::before{background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.45) 100%),url(scratch.png) center/cover,url(grain.png),repeating-linear-gradient(90deg,rgba(255,255,255,.09) 0 1px,rgba(0,0,0,.07) 1px 2px,rgba(255,255,255,0) 2px 4px),linear-gradient(180deg,#c7cacd,#9da1a6 55%,#b4b8bc);filter:none}
+html.mat-gold #stage::before{background:radial-gradient(ellipse at center,transparent 55%,rgba(60,35,0,.5) 100%),url(scratch.png) center/cover,url(grain.png),repeating-linear-gradient(90deg,rgba(255,255,255,.1) 0 1px,rgba(0,0,0,.06) 1px 3px),linear-gradient(120deg,#9a7623,#e9cd6e 22%,#b8922f 42%,#f3dc86 62%,#a98427 82%,#d8b955);filter:none}
+html.mat-gold #stage::after{box-shadow:inset 0 0 0 4px #3b2a08,inset 0 0 0 7px #f6e08f,inset 0 0 0 10px #5a420f}
+html.mat-copper #stage::before{background:radial-gradient(ellipse at center,transparent 55%,rgba(40,15,0,.55) 100%),url(scratch.png) center/cover,url(grain.png),repeating-linear-gradient(90deg,rgba(255,255,255,.08) 0 1px,rgba(0,0,0,.07) 1px 3px),linear-gradient(120deg,#8a4524,#d98a5c 22%,#a2542d 42%,#e29a6c 62%,#8f4826 82%,#c97649);filter:none}
+html.mat-copper #stage::after{box-shadow:inset 0 0 0 4px #2f1507,inset 0 0 0 7px #f0a878,inset 0 0 0 10px #4a2210}
+html.mat-chrome #stage::before{background:radial-gradient(ellipse at center,transparent 60%,rgba(0,0,0,.35) 100%),url(scratch.png) center/cover,linear-gradient(100deg,#c9cbcd,#f1f2f3 18%,#9a9da0 34%,#e8e9ea 50%,#a7aaad 68%,#eef0f1 84%,#b3b6b9);filter:none}
+html.mat-leather #stage::before{background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.6) 100%),url(grain.png),radial-gradient(circle,rgba(255,255,255,.07) 0 1px,transparent 1.6px) 0 0/7px 7px,radial-gradient(circle,rgba(0,0,0,.25) 0 1px,transparent 1.6px) 3px 3px/7px 7px,linear-gradient(#4a3022,#33200f);filter:none}
+html.mat-leather #stage::after{box-shadow:inset 0 0 0 4px #120a05,inset 0 0 0 7px #a67c52,inset 0 0 0 10px #1f120a}
+html.mat-leather{--sa:#f0d27a;--sb:#a2791f;--sc:#4a3508}
+html.mat-wood{--sa:#f0d27a;--sb:#a2791f;--sc:#4a3508}
+html.mat-alu,html.mat-gold,html.mat-chrome{--label:#2c2a22}
+html.mat-alu .logo,html.mat-gold .logo,html.mat-chrome .logo{filter:brightness(.18) contrast(1.2) drop-shadow(0 1px 0 rgba(255,255,255,.5))}
+html.mat-alu .model,html.mat-alu .tl,html.mat-gold .model,html.mat-gold .tl,html.mat-chrome .model,html.mat-chrome .tl{text-shadow:0 1px 0 rgba(255,255,255,.45)}
+/* --- Pantallas nuevas --- */
+html.lcd-red{--lcd:#e48a7c;--lcd2:#c9604f;--lcdink:#2c0703;--lcdhd:#220502;--lcdbd:#140301}
+html.lcd-white{--lcd:#dcdccd;--lcd2:#bdbdab;--lcdink:#1b1b16;--lcdhd:#141410;--lcdbd:#0b0b09}
+html.lcd-violet{--lcd:#c3a8e6;--lcd2:#a083cf;--lcdink:#1d0a33;--lcdhd:#150726;--lcdbd:#0c0416}
+html.lcd-orange{--lcd:#f2a15a;--lcd2:#dd7c2c;--lcdink:#2e1200;--lcdhd:#231000;--lcdbd:#140900}
+html.lcd-cyan{--lcd:#97e6dc;--lcd2:#6cc9bd;--lcdink:#032622;--lcdhd:#021d1a;--lcdbd:#01110f}
+html.lcd-inv{--lcd:#0f1a0c;--lcd2:#08100a;--lcdink:#8dff6a;--lcdhd:#8dff6a;--lcdbd:#050905}
+html.lcd-inv .lcd{text-shadow:0 0 6px rgba(141,255,106,.55)}
+html.lcd-invam{--lcd:#1c1204;--lcd2:#110b02;--lcdink:#ffb43a;--lcdhd:#ffb43a;--lcdbd:#080500}
+html.lcd-invam .lcd{text-shadow:0 0 6px rgba(255,180,58,.5)}
+/* --- Pads --- */
+html.pad-cream{--padA:#e9e2cf;--padB:#bdb49c;--padTx:#2c2a22}
+html.pad-black{--padA:#2a2a28;--padB:#121211;--padTx:#cfcab8}
+html.pad-red{--padA:#b8463a;--padB:#7b2018;--padTx:#f6e6dc}
+html.pad-blue{--padA:#4f6f96;--padB:#2a3f5c;--padTx:#e3ecf5}
+html.pad-olive{--padA:#6f7650;--padB:#454a2f;--padTx:#ece8d2}
+html.pad-white{--padA:#f2f1ec;--padB:#cfcdc4;--padTx:#2a2a26}
+html.pad-orange{--padA:#e08a3c;--padB:#a8561a;--padTx:#2a1300}
+/* --- Botones DIG/DESCARGAR + LEDs --- */
+html.key-orange{--k1:#e2873a;--k2:#b45d17;--kE:#5a2b05;--kT:#fff3e3;--led:#ffae2b;--ledRGB:255,170,40;--hitA:#f0a04f;--hitB:#b45d17}
+html.key-blue{--k1:#3f7fc4;--k2:#24548c;--kE:#0e2643;--kT:#eef5ff;--led:#3fb6ff;--ledRGB:60,180,255;--hitA:#5b97d6;--hitB:#24548c}
+html.key-green{--k1:#4c9a4a;--k2:#2e6a2d;--kE:#103010;--kT:#effbe9;--led:#5dff4a;--ledRGB:90,255,70;--hitA:#62b35f;--hitB:#2e6a2d}
+html.key-gold{--k1:#d4ad4c;--k2:#9c7a25;--kE:#4a390b;--kT:#241a02;--led:#ffd34a;--ledRGB:255,210,70;--hitA:#e2c069;--hitB:#9c7a25}
+html.key-cream{--k1:#efe6cf;--k2:#c9bd9d;--kE:#6c6249;--kT:#2a2519;--led:#fff1c4;--ledRGB:255,240,190;--hitA:#f3ead3;--hitB:#b9ab86}
+html.key-violet{--k1:#9a62d0;--k2:#6a3a9c;--kE:#2e1449;--kT:#f6eeff;--led:#d38bff;--ledRGB:210,140,255;--hitA:#ad7bdc;--hitB:#6a3a9c}
+html.key-cyan{--k1:#39b6ad;--k2:#1f7d77;--kE:#0a3633;--kT:#eafffb;--led:#4dfff0;--ledRGB:80,255,240;--hitA:#55c9c1;--hitB:#1f7d77}
+#p-dig.on{display:flex;flex-direction:column}
+#dinfo{flex:1;min-height:0;overflow:auto}
+#wavebox{flex:none;border-top:2px solid var(--lcdink);padding-top:6px}
+#wave{display:block;width:100%;height:40px;cursor:pointer}
+#info .l{font-size:22px;line-height:1.05;margin:0}
+#info .t{font-size:34px;margin-bottom:4px}
+#info .t.long{font-size:26px}
+#lBpm,#lVid{display:inline-block;margin-right:14px}
+.cr .li{font-size:22px}
+.tl,.empty{color:#d9d4c3}
+.wnav{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:4px}.wnav .li{width:auto;min-width:56px;padding:2px 12px;border:2px solid var(--lcdink);display:flex;align-items:center;justify-content:center;text-align:center}#wTrk{flex:1;text-align:center;opacity:.75;font-size:.8em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html.mob .wnav .li{min-width:72px;height:44px;font-size:24px}html.mob .wnav .li.rec{min-width:56px;padding:2px 6px}
+.wb{position:relative;height:28px;margin-top:2px}.wb .li{position:absolute;top:0;transform:translateX(-50%);width:auto}
+.cr{display:flex;flex-wrap:wrap;gap:3px 10px;margin-top:4px}
+.cr .li{width:auto;padding:0 6px;border:2px solid var(--lcdink)}
+#lFollow{display:flex;align-items:center;gap:8px;margin-bottom:6px;padding:0 6px;background:var(--lcdink);color:var(--lcd)}
+#lFollow .li{width:auto;color:var(--lcd)}
+#lFollow[hidden]{display:none}
+.li[hidden]{display:none}
+</style>
+</head>
+<body>
+<div id="stage">
+<i class="screw s1"></i><i class="screw s2"></i><i class="screw s3"></i><i class="screw s4"></i>
+<div class="top"><img class="logo" src="logo.png" alt="FIYODIGGER"><div class="model">Digging Center · RFL</div></div>
+<div class="main">
+<div class="bezel lcdb"><div class="lcd">
+<div class="hd"><span id="pgname">DIG</span><span>DISCOGS</span></div>
+<div class="page on" id="p-dig">
+<div id="dinfo">
+<div id="lFollow" hidden><span id="lFollowTxt"></span><button class="li" id="followOff" type="button" aria-label="Dejar de seguir">[X]</button></div>
+<div id="empty">PRESIONA UN PAD<br>O [DIG] PARA EMPEZAR</div>
+<div id="info" hidden>
+<div class="t" id="lTitle"></div>
+<div class="l" id="lArtist"></div>
+<div class="l dim" id="lInfo"></div>
+<div class="l dim" id="lLabel"></div>
+<div class="l" id="lTags"></div>
+<div class="l" id="lRare"></div>
+<div class="l" id="lBpm"></div>
+<div class="l dim" id="lVid"></div>
+<div class="cr" id="lCred"></div>
+</div></div>
+<div id="wavebox"><div class="wnav"><button class="li rec" id="rPrev" type="button" aria-label="Disco anterior" title="Disco anterior">◀◀</button><button class="li" id="wPrev" type="button" aria-label="Tema anterior">◀</button><span id="wTrk"></span><button class="li" id="wNext" type="button" aria-label="Tema siguiente">▶</button><button class="li rec" id="rNext" type="button" aria-label="Disco siguiente" title="Disco siguiente">▶▶</button></div><canvas id="wave" height="80"></canvas>
+<div class="wb"><button class="li" data-j="0.25" type="button" style="left:25%">[25%]</button><button class="li" data-j="0.5" type="button" style="left:50%">[50%]</button><button class="li" data-j="0.75" type="button" style="left:75%">[75%]</button></div></div>
+</div>
+<div class="page" id="p-filter"><div class="fgrid">
+<span>GUARDADOS</span><div class="row"><select id="saved"></select><button class="li" id="fdel" style="width:auto" aria-label="Borrar filtro guardado">[X]</button></div>
+<span>GENERO</span><div class="cf" id="f-genre"></div>
+<span>ESTILO</span><div class="cf" id="f-style"></div>
+<span title="Busca en los creditos de Discogs quien toca cada instrumento">INSTRUMENTOS</span><div class="cf" id="f-inst"></div>
+<span>REGION</span><div class="cf" id="f-country"></div>
+<span title="Descarta ediciones licenciadas y artistas de otro pais">ORIGEN</span><input id="local" type="checkbox" checked>
+<span>TONALIDAD</span><div class="cf" id="f-key"></div>
+<span>TEMPO</span><div class="row"><input id="tmin" type="number" min="0" max="250" placeholder="MIN"><input id="tmax" type="number" min="0" max="250" placeholder="MAX"></div>
+<span>VIEWS</span><div class="row"><input id="vmin" type="number" min="0" placeholder="MIN"><input id="vmax" type="number" min="0" placeholder="MAX"></div>
+<span>RAREZA</span><div class="row"><input id="hmax" type="number" min="0" placeholder="HAVE MAX"><input id="wmin" type="number" min="0" placeholder="WANT MIN"></div>
+<span>AÑO</span><div class="row"><input id="ymin" type="number" min="1860" max="2026" placeholder="MIN"><input id="ymax" type="number" min="1860" max="2026" placeholder="MAX"></div>
+<span>TAGS</span><div class="cf" id="f-tags"></div>
+<span>SOLO TOPIC</span><input id="topic" type="checkbox">
+<span>SOLO VINILO</span><input id="vinyl" type="checkbox" checked>
+<span>SOLO VIDEO</span><input id="onlyvid" type="checkbox" checked>
+</div>
+<div class="row" style="margin-top:10px"><input id="fname" maxlength="25" placeholder="NOMBRE DEL FILTRO"><button class="li" id="fsave" style="width:auto">[GUARDAR]</button><button class="li" id="freset" style="width:auto">[RESET]</button><button class="li" id="fgo" style="width:auto">[DIG IT]</button></div></div>
+<div class="page" id="p-padedit"><div class="fgrid">
+<span>NOMBRE</span><input id="pn" maxlength="10">
+<span>GENERO</span><select id="pg"></select>
+<span>ESTILO</span><input id="ps" autocomplete="off">
+<span>REGION</span><input id="pc" autocomplete="off">
+<span>AÑO DESDE</span><input id="py1" type="number" min="1900" max="2026">
+<span>AÑO HASTA</span><input id="py2" type="number" min="1900" max="2026">
+</div>
+<div class="row" style="margin-top:10px"><button class="li" id="padSave" style="width:auto">[GUARDAR PAD]</button><button class="li" id="padReset" style="width:auto">[RESTAURAR]</button><button class="li" id="padDone" style="width:auto">[LISTO]</button></div></div>
+<div class="page" id="p-favs"></div>
+<div class="page" id="p-hist"></div>
+<div class="page" id="p-setup">
+<div class="l">TOKEN DE DISCOGS (OPCIONAL)</div>
+<input id="token" type="password" autocomplete="off" placeholder="NO HACE FALTA - SOLO SI QUERES USAR EL TUYO">
+<div class="l dim" style="margin-top:8px">DISCOGS.COM/SETTINGS/DEVELOPERS</div>
+<div class="l" style="margin-top:10px">CLAVE YOUTUBE (VIEWS, TAGS, TOPIC)</div>
+<input id="ytkey" type="password" autocomplete="off" placeholder="PEGALA AQUI">
+<button class="li" id="ytVideo" style="width:100%">[VER VIDEO TUTORIAL]</button>
+<div class="l" style="margin-top:10px">CARPETA DE DESCARGAS</div>
+<button class="li" id="folderBtn" style="width:100%"></button>
+<button class="li" id="folderOpen" style="width:100%">[ABRIR CARPETA]</button>
+<button class="li" id="editPads" style="width:100%;margin-top:10px">[EDITAR PADS]</button>
+<button class="li" id="manualBtn" style="width:100%">[ABRIR MANUAL]</button>
+<button class="li" id="langBtn" style="width:100%;margin-top:10px"></button>
+<button class="li" id="skinModel" style="width:100%"></button>
+<button class="li" id="skinCase" style="width:100%"></button>
+<button class="li" id="skinMat" style="width:100%"></button>
+<button class="li" id="skinLcd" style="width:100%"></button>
+<button class="li" id="skinPad" style="width:100%"></button>
+<button class="li" id="skinKey" style="width:100%"></button>
+<div class="l dim" style="margin-top:8px">ATAJOS: ESPACIO = DIG · 1234 QWER ASDF ZXCV = PADS · F1-F5 = PANTALLAS</div>
+<div class="l dim" id="engine" style="margin-top:8px">MOTOR YT-DLP: ACTUALIZANDO...</div>
+<div class="l" style="margin-top:10px">ACTUALIZACIONES</div>
+<input id="updUrl" placeholder="PEGA EL LINK DE latest.json" autocomplete="off" style="text-transform:none" hidden>
+<button class="li" id="updBtn" style="width:100%">[BUSCAR ACTUALIZACION]</button>
+<button class="li" id="updGo" style="width:100%" hidden>[REINICIAR PARA ACTUALIZAR]</button>
+<button class="li" id="updFull" style="width:100%" hidden>[ABRIR DESCARGA COMPLETA]</button>
+<div class="l dim" id="updTxt"></div>
+<button class="li" id="diagBtn" style="width:100%;margin-top:8px">[DIAGNOSTICO]</button>
+<div class="l dim" id="diag"></div>
+<button class="li" id="resetBtn" style="width:100%">[LIMPIAR Y REINICIAR MOTOR]</button>
+<button class="li" id="logBtn" style="width:100%">[ABRIR REGISTRO]</button>
+<div class="l dim" id="verTxt">FIYODIGGER · DIGGING CENTER RFL</div>
+</div>
+<div class="ft" id="status" role="status"></div>
+</div></div>
+<div class="vcol">
+<div class="crt"><div class="scr"><iframe id="player" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" title="Reproductor"></iframe><iframe id="player2" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" title="Reproductor en espera" tabindex="-1" aria-hidden="true"></iframe></div></div>
+<div class="vctl"><button class="key" id="vPrev" type="button">◀ VIDEO</button><button class="key" id="vNext" type="button">VIDEO ▶</button></div>
+<div id="vids" hidden></div>
+</div>
+<div class="fkeys" id="fkeys">
+<button class="key on" data-p="dig">F1 DIG</button><button class="key" data-p="filter">F2 FILTRO</button><button class="key" data-p="favs">F3 FAVS</button><button class="key" data-p="hist">F4 HISTORIAL</button><button class="key" data-p="setup">F5 SETUP</button>
+</div>
+<div class="tray"><div class="tl">DESCARGAS</div><div class="files" id="files"></div></div>
+<div class="right">
+<div class="bezel"><div class="pads" id="pads"></div></div>
+<button class="key dig" id="dig">DIG</button>
+<div class="trio"><button class="key" id="fav">SAVE</button><button class="key" id="fold" title="Abrir la carpeta de descargas">CARPETA</button><button class="key" id="dc">DISCOGS</button></div>
+<div class="trio" id="fmt" style="margin-top:12px"><button class="key on" data-f="mp3">MP3</button><button class="key" data-f="wav">WAV</button><button class="key" data-f="flac">FLAC</button></div>
+<button class="key get" id="dl1">DESCARGAR MP3</button>
+</div>
+</div>
+</div>
+<script src="lists.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const store = {
+  get(k, d){ try { return JSON.parse(localStorage.getItem(k)) ?? d } catch { return d } },
+  set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)) } catch {} }
+};
+let armT = null, armFile = null, curVid = 0, busy = false, lbl = '', fmt = store.get('dg_fmt', 'mp3'), files = store.get('dg_files', []);
+// Discogs: si pegaste tu token se usa ese; si no, las claves de la app FIYODIGGER (se agregan al compilar)
+const APP_DG = window.FD_DGK && window.FD_DGS ? { key: window.FD_DGK, secret: window.FD_DGS } : null;
+const dgAuth = () => token ? { token } : (APP_DG || null);
+let token = store.get('dg_token', ''), favs = store.get('dg_favs', []), hist = store.get('dg_hist', []), current = null;
+const rnd = n => Math.floor(Math.random() * n);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const say = (m, err) => { $('status').textContent = m; $('status').className = 'ft' + (err ? ' err' : '') };
+
+// Genres + pads
+['', ...LISTS.genre].forEach(g => { const o = document.createElement('option'); o.value = g; o.textContent = g || 'CUALQUIERA'; $('pg').append(o) });
+const PADS = [['Soul','Funk / Soul','Soul',''],['Funk','Funk / Soul','Funk',''],['Jazz Funk','','Jazz-Funk',''],['Soul Jazz','','Soul-Jazz',''],
+  ['Incid.','','Incidental Music',''],['Psych','Rock','Psychedelic Rock',''],['Afro','','Afrobeat',''],['Latin','Latin','',''],
+  ['Brasil','','','Brazil'],['Bossa','','Bossa Nova',''],['Disco','','Disco',''],['Gospel','','Gospel',''],
+  ['Tango','','Tango','Argentina'],['Cumbia','','Cumbia',''],['OST','Stage & Screen','',''],['Random','','','']];
+const KEYS = '1234qwerasdfzxcv';
+let pads = store.get('dg_pads', null);
+if (!Array.isArray(pads) || pads.length !== 16) pads = PADS.map(p => [...p, '', '']);
+let selPad = -1, editing = false, editIdx = 0, yearsFromPad = false;
+function renderPads(){
+  $('pads').replaceChildren(...pads.map((p, i) => {
+    const c = document.createElement('div'); c.className = 'cell' + (i === selPad ? ' lit' : '');
+    const b = document.createElement('button');
+    b.className = 'pad' + (i === selPad ? ' sel' : '');
+    b.style.setProperty('--wx', (i * 37 % 180) + 'px'); b.style.setProperty('--wy', (i * 71 % 180) + 'px');
+    b.innerHTML = '<span class="n">' + (i + 1) + '</span>'; b.append(p[0]);
+    b.title = p[0] + ' · tecla ' + KEYS[i].toUpperCase(); b.onclick = () => hitPad(i);
+    const led = document.createElement('i'); led.className = 'led';
+    c.append(b, led);
+    return c;
+  }));
+}
+function hitPad(i){
+  if (editing){ openPadEdit(i); return }
+  setFollow(null);
+  const [, g, s, c, y1, y2] = pads[i];
+  setF('genre', g ? [g] : []); setF('style', s ? [s] : []); setF('country', c ? [c] : []);
+  if (y1 || y2){ $('ymin').value = y1; $('ymax').value = y2; yearsFromPad = true }
+  else if (yearsFromPad){ $('ymin').value = ''; $('ymax').value = ''; yearsFromPad = false }
+  selPad = i; renderPads();
+  const el = $('pads').children[i]; el.classList.add('hit'); setTimeout(() => el.classList.remove('hit'), 120);
+  dig();
+}
+function openPadEdit(i){
+  editIdx = i;
+  ['pn', 'pg', 'ps', 'pc', 'py1', 'py2'].forEach((id, k) => { $(id).value = pads[i][k] });
+  page('padedit'); say('EDITANDO PAD ' + (i + 1));
+}
+$('padSave').onclick = () => {
+  const cs = canon('style', $('ps').value), cc = canon('country', $('pc').value);
+  if ($('ps').value.trim() && !cs){ say('ESE ESTILO NO EXISTE EN LA LISTA', true); return }
+  if ($('pc').value.trim() && !cc){ say('ESA REGION NO EXISTE EN LA LISTA', true); return }
+  pads[editIdx] = [$('pn').value.trim().slice(0, 10) || 'PAD ' + (editIdx + 1), $('pg').value, cs, cc, $('py1').value, $('py2').value];
+  store.set('dg_pads', pads); renderPads(); say('PAD ' + (editIdx + 1) + ' GUARDADO');
+};
+$('padReset').onclick = () => { pads[editIdx] = [...PADS[editIdx], '', '']; store.set('dg_pads', pads); renderPads(); openPadEdit(editIdx); say('PAD ' + (editIdx + 1) + ' RESTAURADO') };
+$('editPads').onclick = () => {
+  editing = !editing; $('editPads').classList.toggle('on', editing); $('pads').classList.toggle('editing', editing);
+  $('editPads').textContent = editing ? 'LISTO (SALIR DE EDICION)' : 'EDITAR PADS';
+  if (!editing) page('dig');
+  say(editing ? 'TOCA UN PAD PARA EDITARLO' : 'MODO EDICION APAGADO');
+};
+renderPads();
+
+// Filtros (varios valores por campo: ALGUNO / TODOS / EXCLUIR)
+const low = t => String(t).toLowerCase();
+const canon = (k, val) => { const t = low(String(val).trim()); return LISTS[k].find(x => low(x) === t) || '' };
+const INST_Q = {"Trompeta":"trumpet","Trombon":"trombone","Saxo":"saxophone","Saxo tenor":"tenor saxophone","Saxo alto":"alto saxophone","Saxo baritono":"baritone saxophone","Saxo soprano":"soprano saxophone","Vientos (bronces)":"horns","Flauta":"flute","Clarinete":"clarinet","Oboe":"oboe","Fagot":"bassoon","Corno frances":"french horn","Tuba":"tuba","Armonica":"harmonica","Acordeon":"accordion","Bandoneon":"bandoneon","Piano":"piano","Rhodes / piano electrico":"electric piano","Organo":"organ","Clavinet":"clavinet","Clavecin":"harpsichord","Sintetizador":"synthesizer","Mellotron":"mellotron","Vibrafono":"vibraphone","Marimba":"marimba","Xilofono":"xylophone","Guitarra":"guitar","Guitarra acustica":"acoustic guitar","Pedal steel":"pedal steel","Bajo":"bass","Contrabajo":"double bass","Bateria":"drums","Caja de ritmos":"drum machine","Percusion":"percussion","Congas":"congas","Bongos":"bongos","Timbales":"timbales","Steel drums":"steel drums","Cuica":"cuica","Berimbau":"berimbau","Tabla":"tabla","Cuerdas":"strings","Violin":"violin","Chelo":"cello","Arpa":"harp","Sitar":"sitar","Banjo":"banjo","Mandolina":"mandolin","Cavaquinho":"cavaquinho","Ukelele":"ukulele","Theremin":"theremin","Voz":"vocals","Coros":"backing vocals"};
+// Instrumentos: nombre en pantalla (es / en) -> como figuran en los creditos de Discogs (in: incluye, out: descarta)
+const INST = [
+  ['Trompeta', 'Trumpet', /trumpet|fl[uü]gelhorn|cornet/i],
+  ['Trombon', 'Trombone', /trombone/i],
+  ['Saxo', 'Sax', /sax/i],
+  ['Saxo tenor', 'Tenor sax', /tenor sax|sax[a-z]*\s*\[tenor/i],
+  ['Saxo alto', 'Alto sax', /alto sax|sax[a-z]*\s*\[alto/i],
+  ['Saxo baritono', 'Baritone sax', /baritone sax|sax[a-z]*\s*\[baritone/i],
+  ['Saxo soprano', 'Soprano sax', /soprano sax|sax[a-z]*\s*\[soprano/i],
+  ['Vientos (bronces)', 'Horns (brass)', /\bhorns?\b|brass|trumpet|trombone|fl[uü]gelhorn|tuba|sax/i, /french horn|english horn/i],
+  ['Flauta', 'Flute', /flute|piccolo/i],
+  ['Clarinete', 'Clarinet', /clarinet/i],
+  ['Oboe', 'Oboe', /oboe|cor anglais|english horn/i],
+  ['Fagot', 'Bassoon', /bassoon/i],
+  ['Corno frances', 'French horn', /french horn/i],
+  ['Tuba', 'Tuba', /tuba|sousaphone/i],
+  ['Armonica', 'Harmonica', /harmonica|blues harp/i],
+  ['Acordeon', 'Accordion', /accordion/i],
+  ['Bandoneon', 'Bandoneon', /bandone/i],
+  ['Piano', 'Piano', /piano/i, /electric piano|e-piano|toy piano/i],
+  ['Rhodes / piano electrico', 'Rhodes / electric piano', /rhodes|electric piano|e-piano|wurlitzer/i],
+  ['Organo', 'Organ', /\borgan\b|hammond|farfisa/i],
+  ['Clavinet', 'Clavinet', /clavinet/i],
+  ['Clavecin', 'Harpsichord', /harpsichord/i],
+  ['Sintetizador', 'Synthesizer', /synth|moog|\barp\b|oberheim|prophet/i],
+  ['Mellotron', 'Mellotron', /mellotron/i],
+  ['Vibrafono', 'Vibraphone', /vibraphone|vibraharp|\bvibes\b/i],
+  ['Marimba', 'Marimba', /marimba/i],
+  ['Xilofono', 'Xylophone', /xylophone/i],
+  ['Guitarra', 'Guitar', /guitar/i, /bass guitar|steel guitar|guitarr[oó]n/i],
+  ['Guitarra acustica', 'Acoustic guitar', /acoustic guitar|12-string|nylon|classical guitar|spanish guitar/i],
+  ['Pedal steel', 'Pedal steel', /pedal steel|steel guitar|lap steel/i],
+  ['Bajo', 'Bass', /\bbass\b/i, /double|upright|contrabass|acoustic bass|clarinet|trombone|sax|drum|flute|vocal|voice|tuba|baritone|synth|harmonica/i],
+  ['Contrabajo', 'Double bass', /double bass|upright bass|contrabass|acoustic bass/i],
+  ['Bateria', 'Drums', /\bdrums?\b|drum kit/i, /steel|machine|programm|talking/i],
+  ['Caja de ritmos', 'Drum machine', /drum machine|drum programming|rhythm machine|\b808\b/i],
+  ['Percusion', 'Percussion', /percussion/i],
+  ['Congas', 'Congas', /conga/i],
+  ['Bongos', 'Bongos', /bongo/i],
+  ['Timbales', 'Timbales', /timbales/i],
+  ['Steel drums', 'Steel drums', /steel (drum|pan)|steelpan/i],
+  ['Cuica', 'Cuica', /cu[ií]ca/i],
+  ['Berimbau', 'Berimbau', /berimbau/i],
+  ['Tabla', 'Tabla', /tabla/i],
+  ['Cuerdas', 'Strings', /strings|violin|viola|cello|string section/i],
+  ['Violin', 'Violin', /violin|fiddle/i],
+  ['Chelo', 'Cello', /cello/i],
+  ['Arpa', 'Harp', /\bharp\b/i, /blues harp/i],
+  ['Sitar', 'Sitar', /sitar/i],
+  ['Banjo', 'Banjo', /banjo/i],
+  ['Mandolina', 'Mandolin', /mandolin/i],
+  ['Cavaquinho', 'Cavaquinho', /cavaquinho/i],
+  ['Ukelele', 'Ukulele', /ukulele|ukelele/i],
+  ['Theremin', 'Theremin', /theremin/i],
+  ['Voz', 'Vocals', /vocal|voice|lead singer/i, /backing|chorus|choir/i],
+  ['Coros', 'Backing vocals', /backing vocal|chorus|choir|coro/i]
+].map(([es, en, inc, exc]) => ({ es, en, inc, exc, q: INST_Q[es] || en.toLowerCase(), name: (window.FD_LANG === 'en' ? en : es) }));
+// Busqueda rapida: Discogs busca la palabra tambien en los creditos, asi que se piden directo discos que la mencionan
+let instNoQ = false;
+function instQuery(){
+  if (!F.inst.v.length || F.inst.m === 'not' || instNoQ) return '';
+  const ts = [...new Set(F.inst.v.map(instOf).filter(Boolean).map(x => x.q))];
+  return F.inst.m === 'all' ? ts.join(' ') : pick(ts);
+}
+LISTS.inst = INST.map(x => x.name);
+const instOf = v => { const t = low(v); return INST.find(x => low(x.es) === t || low(x.en) === t) };
+// Todas las partes de los creditos ("Trumpet, Flugelhorn" -> 2 partes), del disco y de cada tema
+function instCredits(rel){
+  const parts = (who, role, track) => String(role || '').split(/,|\s&\s|\//).map(r => ({ r: r.trim(), who, track })).filter(x => x.r);
+  const out = [];
+  (rel.extraartists || []).forEach(a => out.push(...parts(a, a.role, null)));
+  const walk = t => { (t.extraartists || []).forEach(a => out.push(...parts(a, a.role, t.title || ''))); (t.sub_tracks || []).forEach(walk) };
+  (rel.tracklist || []).forEach(walk);
+  return out;
+}
+const instHits = (cr, x) => cr.filter(c => x.inc.test(c.r) && !(x.exc && x.exc.test(c.r)));
+// true si el disco cumple el filtro; ademas deja anotado quien toca y en que temas (para ordenar los videos)
+function instOk(rel){
+  rel._inst = null;
+  const want = F.inst.v.map(instOf).filter(Boolean);
+  if (!want.length) return true;
+  const cr = instCredits(rel), found = want.map(x => instHits(cr, x));
+  if (F.inst.m === 'not') return found.every(h => !h.length);
+  if (!(F.inst.m === 'all' ? found.every(h => h.length) : found.some(h => h.length))) return false;
+  rel._inst = want.map((x, i) => ({ x, h: found[i] })).filter(o => o.h.length);
+  return true;
+}
+// Si el instrumento figura solo en algunos temas, los videos de esos temas van primero
+function instSort(rel, vids){
+  if (!rel._inst || F.inst.m === 'not') return vids;
+  const all = rel._inst.flatMap(o => o.h);
+  if (all.some(c => !c.track)) return vids;
+  const titles = [...new Set(all.map(c => low(c.track)).filter(t => t.length >= 3))];
+  const score = v => titles.some(t => low(v.title || '').includes(t)) ? 1 : 0;
+  return vids.map((v, i) => [v, i]).sort((a, b) => score(b[0]) - score(a[0]) || a[1] - b[1]).map(p => p[0]);
+}
+const FK = ['genre', 'style', 'inst', 'country', 'key', 'tags'];
+const MODES = { inst: ['any', 'all', 'not'], genre: ['any', 'all', 'not'], style: ['any', 'all', 'not'], tags: ['any', 'all', 'not'], country: ['any', 'not'], key: ['any', 'not'] };
+const MODE_TXT = { any: 'ALGUNO', all: 'TODOS', not: 'EXCLUIR' };
+const F = Object.fromEntries(FK.map(k => [k, { v: [], m: 'any' }]));
+const NUMS = ['tmin', 'tmax', 'vmin', 'vmax', 'ymin', 'ymax', 'hmax', 'wmin'], CHKS = ['topic', 'vinyl', 'onlyvid', 'local'];
+// Lista desplegable propia: scroll visible, buscador y multi-seleccion
+const dd = document.createElement('div'); dd.id = 'dd'; dd.hidden = true; document.body.append(dd);
+let ddc = null;
+function ddRender(){
+  const q = low(ddc.inp.value.trim());
+  const items = ddc.items.filter(x => !q || low(x).includes(q));
+  if (q) items.sort((a, b) => (low(a).startsWith(q) ? 0 : 1) - (low(b).startsWith(q) ? 0 : 1));
+  ddc.shown = items; ddc.cur = -1; dd.scrollTop = 0;
+  if (!items.length){ dd.innerHTML = '<div class="dd-empty">SIN COINCIDENCIAS</div>'; return }
+  dd.replaceChildren(...items.map(x => {
+    const b = document.createElement('button'); b.type = 'button'; b.tabIndex = -1; b.textContent = x;
+    b.className = 'dd-i' + (ddc.isSel(x) ? ' sel' : '');
+    b.onmousedown = e => { e.preventDefault(); ddPick(x, b) };
+    return b;
+  }));
+}
+function ddPlace(){
+  const k = document.documentElement.classList.contains('mob') ? .8 : Math.min(innerWidth / 1600, innerHeight / 1000);
+  const r = ddc.inp.getBoundingClientRect(), below = innerHeight - r.bottom - 14, above = r.top - 14, mh = 360 * k;
+  dd.style.fontSize = (26 * k) + 'px';
+  dd.style.left = Math.max(8, Math.min(r.left, innerWidth - 340 * k)) + 'px';
+  dd.style.minWidth = Math.min(Math.max(r.width, 340 * k), innerWidth - 16) + 'px';
+  if (below >= 200 * k || below >= above){ dd.style.top = (r.bottom + 2) + 'px'; dd.style.bottom = 'auto'; dd.style.maxHeight = Math.min(mh, below) + 'px' }
+  else { dd.style.bottom = (innerHeight - r.top + 2) + 'px'; dd.style.top = 'auto'; dd.style.maxHeight = Math.min(mh, above) + 'px' }
+}
+function ddPick(x, btn){
+  const c = ddc; c.pick(x);
+  if (c.close){ ddClose(); return }
+  if (btn) btn.classList.toggle('sel', c.isSel(x));
+  ddPlace();
+}
+function ddClose(){ dd.hidden = true; ddc = null }
+function ddAttach(inp, items, pick, isSel, close){
+  const open = () => { ddc = { inp, items, pick, isSel, close, cur: -1, shown: [] }; dd.hidden = false; ddRender(); ddPlace() };
+  inp.addEventListener('focus', open);
+  inp.addEventListener('input', open);
+  inp.addEventListener('blur', () => setTimeout(() => { if (ddc && ddc.inp === inp) ddClose() }, 150));
+  inp.addEventListener('keydown', e => {
+    if (!ddc || ddc.inp !== inp) return;
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp'){
+      e.preventDefault(); const n = ddc.shown.length; if (!n) return;
+      ddc.cur = (ddc.cur + (e.key === 'ArrowDown' ? 1 : -1) + n) % n;
+      [...dd.children].forEach((b, i) => b.classList.toggle('cur', i === ddc.cur));
+      if (dd.children[ddc.cur]) dd.children[ddc.cur].scrollIntoView({ block: 'nearest' });
+    } else if (e.key === 'Enter' && ddc.cur >= 0){
+      e.preventDefault(); e._dd = true; ddPick(ddc.shown[ddc.cur], dd.children[ddc.cur]);
+    } else if (e.key === 'Escape') ddClose();
+  });
+}
+document.addEventListener('scroll', e => { if (ddc && e.target !== dd) ddClose() }, true);
+addEventListener('resize', () => { if (ddc) ddPlace() });
+FK.forEach(k => {
+  const box = $('f-' + k);
+  const mode = document.createElement('button'); mode.type = 'button'; mode.className = 'mode'; mode.title = 'Toca para cambiar el modo';
+  const chips = document.createElement('span');
+  const inp = document.createElement('input'); inp.autocomplete = 'off'; inp.setAttribute('aria-label', k);
+  inp.placeholder = k === 'tags' ? 'ESCRIBE Y ENTER' : 'BUSCAR...';
+  mode.onclick = () => { const ms = MODES[k]; F[k].m = ms[(ms.indexOf(F[k].m) + 1) % ms.length]; renderF(k) };
+  const add = () => {
+    const raw = inp.value.trim(); if (!raw) return;
+    const val = k === 'tags' ? raw : canon(k, raw);
+    if (!val){ say('NO EXISTE EN LA LISTA: ' + raw.toUpperCase(), true); return }
+    if (!F[k].v.includes(val)) F[k].v.push(val);
+    inp.value = ''; renderF(k);
+  };
+  if (k !== 'tags') ddAttach(inp, LISTS[k], x => { const f = F[k]; f.v = f.v.includes(x) ? f.v.filter(y => y !== x) : [...f.v, x]; renderF(k) }, x => F[k].v.includes(x), false);
+  inp.addEventListener('keydown', e => { if (e.key === 'Enter' && !e._dd){ e.preventDefault(); add() } });
+  box.replaceChildren(mode, chips, inp); box._mode = mode; box._chips = chips;
+});
+// Orden de la lista de instrumentos: por familia (vientos, teclados, percusion...) o alfabetico. Se recuerda.
+{
+  const box = $('f-inst'), grp = [...LISTS.inst], b = document.createElement('button');
+  b.type = 'button'; b.className = 'mode'; b.title = 'Cambiar el orden de la lista de instrumentos';
+  const apply = () => {
+    const az = !!store.get('dg_inst_az', false);
+    const arr = az ? [...grp].sort((x, y) => x.localeCompare(y, window.FD_LANG || 'es', { sensitivity: 'base' })) : grp;
+    LISTS.inst.splice(0, LISTS.inst.length, ...arr);
+    b.textContent = az ? 'A-Z' : 'POR FAMILIA';
+  };
+  b.onclick = () => { store.set('dg_inst_az', !store.get('dg_inst_az', false)); apply(); if (ddc && ddc.items === LISTS.inst) ddRender() };
+  box.insertBefore(b, box._chips); apply();
+}
+ddAttach($('ps'), LISTS.style, x => { $('ps').value = x }, x => low($('ps').value) === low(x), true);
+ddAttach($('pc'), LISTS.country, x => { $('pc').value = x }, x => low($('pc').value) === low(x), true);
+function renderF(k){
+  const box = $('f-' + k), f = F[k];
+  box._mode.textContent = MODE_TXT[f.m]; box._mode.classList.toggle('not', f.m === 'not');
+  box._chips.replaceChildren(...f.v.map(x => {
+    const c = document.createElement('button'); c.type = 'button'; c.className = 'chip'; c.textContent = x + ' ×'; c.setAttribute('aria-label', 'Quitar ' + x);
+    c.onclick = () => { f.v = f.v.filter(y => y !== x); renderF(k) };
+    return c;
+  }));
+}
+function setF(k, v){ F[k] = { v, m: 'any' }; renderF(k) }
+FK.forEach(renderF);
+
+let saved = store.get('dg_filters', {});
+const getState = () => ({ F: JSON.parse(JSON.stringify(F)), n: Object.fromEntries(NUMS.map(i => [i, $(i).value])), c: Object.fromEntries(CHKS.map(i => [i, $(i).checked])) });
+function setState(st){
+  FK.forEach(k => { F[k] = st.F && st.F[k] ? { v: [...st.F[k].v], m: st.F[k].m } : { v: [], m: 'any' }; renderF(k) });
+  NUMS.forEach(i => { $(i).value = (st.n && st.n[i]) || '' });
+  CHKS.forEach(i => { $(i).checked = st.c ? !!st.c[i] : $(i).defaultChecked });
+}
+function renderSaved(){ $('saved').replaceChildren(new Option('-- ELEGIR --', ''), ...Object.keys(saved).map(n => new Option(n, n))) }
+$('saved').onchange = e => { const st = saved[e.target.value]; if (st){ setState(st); yearsFromPad = false; say('FILTRO CARGADO') } };
+$('fsave').onclick = () => {
+  const n = $('fname').value.trim().slice(0, 25);
+  if (!n){ say('PONLE NOMBRE AL FILTRO', true); return }
+  saved[n] = getState(); store.set('dg_filters', saved); renderSaved(); $('saved').value = n; $('fname').value = ''; say('FILTRO GUARDADO: ' + n.toUpperCase());
+};
+$('fdel').onclick = () => { const n = $('saved').value; if (!n) return; delete saved[n]; store.set('dg_filters', saved); renderSaved(); say('FILTRO BORRADO') };
+$('freset').onclick = () => { setFollow(null); setState({}); yearsFromPad = false; selPad = -1; renderPads(); say('FILTROS EN CERO') };
+$('fgo').onclick = () => dig();
+renderSaved();
+// Limpia pads guardados con valores que ya no existen en las listas
+pads.forEach(p => { if (p[2] && !canon('style', p[2])) p[2] = ''; if (p[3] && !canon('country', p[3])) p[3] = '' });
+store.set('dg_pads', pads); renderPads();
+
+// Pages
+const NAMES = { dig: 'DIG', filter: 'FILTRO', favs: 'FAVORITOS', hist: 'HISTORIAL', setup: 'SETUP', padedit: 'EDITAR PAD' };
+function page(p){
+  document.querySelectorAll('.page').forEach(e => e.classList.toggle('on', e.id === 'p-' + p));
+  document.querySelectorAll('#fkeys .key').forEach(e => e.classList.toggle('on', e.dataset.p === p));
+  $('pgname').textContent = NAMES[p];
+  if (p === 'favs' || p === 'hist') renderLists();
+}
+$('fkeys').onclick = e => { if (e.target.dataset.p) page(e.target.dataset.p) };
+$('token').value = token;
+$('token').onchange = e => { token = e.target.value.trim(); store.set('dg_token', token); say('TOKEN GUARDADO'); };
+// Video de Fiyo: como sacar la clave de YouTube paso a paso
+$('ytVideo').onclick = () => { const u = 'https://drive.google.com/file/d/1ReLLBBL5Wy-YURXT4e_0qTTgsJ7oBOBj/view'; window.fd && fd.openUrl ? fd.openUrl(u) : window.open(u) };
+$('ytkey').value = store.get('dg_ykey', '');
+$('ytkey').onchange = e => { store.set('dg_ykey', e.target.value.trim()); say('CLAVE YOUTUBE GUARDADA') };
+if (!dgAuth()){ page('setup'); say('PEGA TU TOKEN PARA EMPEZAR'); }
+
+// Discogs
+// Discogs permite 60 pedidos por minuto. Ventana real de 60 s con margen (52), y si Discogs avisa que quedan pocos, se frena.
+let tokens = 40; // (compatibilidad)
+const dHits = []; let dHold = 0;
+const dRecent = () => { const now = Date.now(); while (dHits.length && now - dHits[0] > 60000) dHits.shift(); return dHits.length };
+async function takeToken(quiet){
+  let warned = false;
+  for (;;){
+    if (Date.now() >= dHold && dRecent() < 52){ dHits.push(Date.now()); return }
+    if (stopReq && !quiet) return;
+    if (!warned && !quiet){ warned = true; say(Date.now() < dHold ? 'DISCOGS PIDIO UNA PAUSA - ESPERANDO...' : 'DISCOGS: ESPACIANDO PEDIDOS...') }
+    await sleep(250);
+  }
+}
+async function dget(url){
+  if (window.fd && fd.discogs){
+    const r = await fd.discogs(url);
+    if (!r || r.status === 0) throw new Error((r && r.err) || 'RED');
+    return { status: r.status, ok: r.status >= 200 && r.status < 300, remaining: r.remaining, json: async () => JSON.parse(r.body) };
+  }
+  return fetch(url);
+}
+async function api(path, params = {}, tries = 0, quiet = false){
+  await takeToken(quiet);
+  let r;
+  try { r = await dget('https://api.discogs.com' + path + '?' + new URLSearchParams({ ...params, ...dgAuth() })) }
+  catch (e){
+    if (tries < 3 && !stopReq){ dHold = Math.max(dHold, Date.now() + 3000 * (tries + 1)); await sleep(3000 * (tries + 1)); return api(path, params, tries + 1, quiet) }
+    throw new Error('DISCOGS NO RESPONDE - REVISA TU INTERNET');
+  }
+  if (r.remaining != null && r.remaining <= 3) dHold = Math.max(dHold, Date.now() + 6000);
+  if (r.status === 401) throw new Error(token ? 'TOKEN INVALIDO - REVISA SETUP' : 'DISCOGS RECHAZO LA CLAVE DE LA APP - PEGA TU TOKEN EN SETUP');
+  if (r.status === 429){
+    const wait = 10000 * (tries + 1); dHold = Math.max(dHold, Date.now() + wait); // espera creciente: 10, 20, 30, 40 s
+    if (tries < 4 && !stopReq){ if (!quiet) say('DISCOGS PIDIO UNA PAUSA - REINTENTO EN ' + Math.round(wait / 1000) + ' S'); await sleep(wait); return api(path, params, tries + 1, quiet) }
+    throw new Error('DISCOGS: DEMASIADOS PEDIDOS - ESPERA UN MINUTO');
+  }
+  if (!r.ok) throw new Error('ERROR DE DISCOGS ' + r.status);
+  return r.json();
+}
+const ytId = u => (/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/.exec(u || '') || [])[1] || null;
+let digging = false, stopReq = false;
+const pick = arr => arr[rnd(arr.length)];
+function baseParams(){
+  const p = { type: 'release', per_page: 100 };
+  for (const k of ['genre', 'style', 'country']) if (F[k].v.length && F[k].m !== 'not') p[k] = pick(F[k].v);
+  if ($('vinyl').checked) p.format = 'Vinyl';
+  { const iq = instQuery(); if (iq) p.q = iq; }
+  const a = +$('ymin').value, b = +$('ymax').value;
+  if (a || b){ const lo = Math.min(a || b, b || a), hi = Math.max(a || b, b || a); p.year = lo + rnd(hi - lo + 1); }
+  return p;
+}
+function relOk(rel, res){
+  const have = { genre: (rel.genres || []).map(low), style: (rel.styles || []).map(low), country: [low(rel.country || res.country || '')] };
+  for (const k of ['genre', 'style', 'country']){
+    const f = F[k]; if (!f.v.length) continue;
+    const vals = f.v.map(low);
+    if (f.m === 'all' && !vals.every(x => have[k].includes(x))) return false;
+    if (f.m === 'not' && vals.some(x => have[k].includes(x))) return false;
+    if (f.m === 'any' && follow && !vals.some(x => have[k].includes(x))) return false;
+  }
+  if (follow){
+    const y = +rel.year || 0, a = +$('ymin').value || 0, b = +$('ymax').value || 0;
+    if ((a || b) && (!y || y < Math.min(a || b, b || a) || y > Math.max(a || b, b || a))) return false;
+    if ($('vinyl').checked && !(rel.formats || []).some(x => x.name === 'Vinyl')) return false;
+  }
+  const hm = +$('hmax').value || 0, wm = +$('wmin').value || 0, c = rel.community || res.community;
+  if ((hm || wm) && !c) return false;
+  if (hm && c.have > hm) return false;
+  if (wm && c.want < wm) return false;
+  return true;
+}
+function vidOk(v, info, o){
+  if (!info) return !(o.vmin || o.vmax || o.topic || F.tags.v.length);
+  if (info.embed === false || info.geo) return false;
+  if ((o.vmin || o.vmax) && v.views == null) return false;
+  if (o.vmin && v.views < o.vmin) return false;
+  if (o.vmax && v.views > o.vmax) return false;
+  if (o.topic && !low(info.channel).endsWith('- topic')) return false;
+  const t = F.tags;
+  if (t.v.length){
+    const hay = low([...info.tags, info.title, v.title || ''].join(' | '));
+    const hit = t.v.map(x => hay.includes(low(x)));
+    if (t.m === 'all' ? !hit.every(Boolean) : t.m === 'not' ? hit.some(Boolean) : !hit.some(Boolean)) return false;
+  }
+  return true;
+}
+const nViews = n => n >= 1e6 ? (n / 1e6).toFixed(1) + 'M' : n >= 1e3 ? Math.round(n / 1e3) + 'K' : String(n);
+async function ytInfo(ids, key){
+  if (key === '#yti') return fd.ytMeta(ids); // extension: views, tags y canal salen de YouTube sin clave
+  const r = await fetch('https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics,status,contentDetails&id=' + ids.slice(0, 50).join(',') + '&key=' + encodeURIComponent(key));
+  if (!r.ok) throw new Error('CLAVE DE YOUTUBE INVALIDA O SIN CUPO');
+  const o = {};
+  ((await r.json()).items || []).forEach(i => { o[i.id] = { views: i.statistics && i.statistics.viewCount != null ? +i.statistics.viewCount : null, tags: i.snippet.tags || [], title: i.snippet.title || '', channel: i.snippet.channelTitle || '', embed: !(i.status && (i.status.embeddable === false || i.status.privacyStatus === 'private')), geo: (() => { const rr = i.contentDetails && i.contentDetails.regionRestriction; return !!(rr && CC && ((rr.blocked || []).includes(CC) || (rr.allowed && !rr.allowed.includes(CC)))) })() } });
+  return o;
+}
+// Origen local: pais del artista segun MusicBrainz (la region de Discogs es donde se edito el disco)
+const ISO = (() => {
+  const m = {};
+  try { const dn = new Intl.DisplayNames(['en'], { type: 'region' }); for (let a = 65; a <= 90; a++) for (let b = 65; b <= 90; b++){ const c = String.fromCharCode(a, b), n = dn.of(c); if (n && n !== c) m[low(n)] = c } } catch {}
+  return Object.assign(m, { us: 'US', usa: 'US', uk: 'GB', 'czech republic': 'CZ', macedonia: 'MK', 'ivory coast': 'CI', russia: 'RU', 'south korea': 'KR', 'north korea': 'KP', 'hong kong': 'HK', taiwan: 'TW' });
+})();
+let mbz = store.get('dg_mbz', {}), lastMb = 0, autoSkip = 0;
+const badIds = new Set(store.get('dg_bad', []));
+let CC = '', msgSeen = false, playedOk = false, watchT = null;
+if (window.fd && fd.country) fd.country().then(c => { CC = String(c || '').toUpperCase() });
+async function artistCountry(name){
+  const k = low(name);
+  if (mbz[k] !== undefined) return mbz[k];
+  const wait = Math.max(0, lastMb + 1100 - Date.now()); lastMb = Date.now() + wait; if (wait) await sleep(wait);
+  try {
+    const r = await fetch('https://musicbrainz.org/ws/2/artist/?fmt=json&limit=3&query=' + encodeURIComponent('artist:"' + name.replace(/"/g, '') + '"'));
+    if (!r.ok) return null;
+    const a = ((await r.json()).artists || []).find(x => low(x.name) === k && (x.score || 0) >= 85);
+    const cc = a && a.country ? a.country : '';
+    mbz[k] = cc; const ks = Object.keys(mbz); if (ks.length > 1500) delete mbz[ks[0]]; store.set('dg_mbz', mbz);
+    return cc;
+  } catch { return null }
+}
+async function originOk(rel){
+  if ((rel.companies || []).some(c => /licensed from/i.test(c.entity_type_name || ''))) return false;
+  const a = (rel.artists || [])[0];
+  if (!a || a.id === 194) return false;
+  const allowed = new Set(F.country.v.map(n => ISO[low(n)]).filter(Boolean));
+  if (!allowed.size) return true;
+  const cc = await artistCountry(String(a.name).replace(/ \(\d+\)$/, ''));
+  return !cc || allowed.has(cc);
+}
+// Si YouTube avisa que el video no se puede ver aca, pasa al siguiente video o al siguiente disco
+function badVideo(code){
+  if (![2, 5, 100, 101, 150].includes(+code) || !current || !current.vids[curVid]) return;
+  clearTimeout(watchT);
+  current.vids[curVid].bad = true; badIds.add(current.vids[curVid].id); store.set('dg_bad', [...badIds].slice(-600));
+  const n = current.vids.length;
+  for (let k = 1; k < n; k++){ const j = (curVid + k) % n; if (!current.vids[j].bad){ say('VIDEO NO DISPONIBLE - PROBANDO EL SIGUIENTE'); play(j); return } }
+  if (autoSkip < 3 && !digging){ autoSkip++; say('VIDEO BLOQUEADO - BUSCANDO OTRO DISCO...'); dig(true) }
+  else say('VIDEO NO DISPONIBLE EN OTROS SITIOS', true);
+}
+// Si el video no arranca (pantalla negra o aviso), reintenta una vez y despues lo descarta
+function watchPlay(i, tries){
+  if (!current || curVid !== i || playedOk || !msgSeen || document.hidden) return;
+  if (tries < 1){ const u = embedUrl(current.vids[i].id, true); $('player').src = 'about:blank'; setTimeout(() => { $('player').src = u }, 150); watchT = setTimeout(() => watchPlay(i, tries + 1), 8000); return }
+  badVideo(150);
+}
+let fq = null, netFails = 0;
+async function soft(path, params, quiet){
+  try { const d = await api(path, params, 0, quiet); netFails = 0; return d }
+  catch (e){
+    if (/TOKEN INVALIDO/.test(e.message) || stopReq) throw e;
+    if (/NO RESPONDE|DEMASIADOS/.test(e.message) && ++netFails >= 2) throw e;
+    return null;
+  }
+}
+async function followNext(c){
+  const key = c.t + c.id;
+  if (!fq || fq.key !== key) fq = { key, items: [], page: 0, pages: 1 };
+  while (!fq.items.length && fq.page < fq.pages){
+    const d = await api((c.t === 'label' ? '/labels/' : '/artists/') + c.id + '/releases', { per_page: 100, page: fq.page + 1 });
+    fq.page += 1; fq.pages = Math.min((d.pagination && d.pagination.pages) || 1, 20);
+    fq.items = (d.releases || []).filter(r => (r.type || 'release') !== 'master' && !/appearance/i.test(r.role || '')).sort(() => Math.random() - .5);
+  }
+  return fq.items.shift() || null;
+}
+// Precarga: mientras escuchas un disco, la app busca el siguiente en silencio (y baja su onda)
+const sayG = say;
+const pagesMemo = new Map(), relMemo = new Map();
+const pre = { on: false, want: false, abort: false, rec: null, sig: '', t: null };
+const sigNow = () => JSON.stringify([F, NUMS.map(i => $(i).value), CHKS.map(i => $(i).checked), store.get('dg_ykey', '') ? 1 : 0]);
+function schedulePre(){
+  clearTimeout(pre.t);
+  if (!dgAuth() || follow || digging || pre.on) return;
+  if (+$('tmin').value || +$('tmax').value || F.key.v.length) return; // tempo/tonalidad: analisis pesado, no se precarga
+  if (pre.rec && pre.sig === sigNow()) return;
+  pre.rec = null;
+  if (dRecent() > 30 || Date.now() < dHold){ pre.t = setTimeout(schedulePre, 8000); return } // deja cupo para tus DIG
+  pre.t = setTimeout(() => dig(true, true), 1500);
+}
+async function dig(auto, silent){
+  if (silent){ if (digging || pre.on || pre.rec) return }
+  else {
+    if (digging){ stopReq = true; sayG('CANCELANDO...'); return }
+    if (pre.on){
+      if (pre.sig === sigNow()){
+        if (pre.want){ pre.want = false; pre.abort = true; $('dig').textContent = 'DIG'; sayG('CANCELADO') }
+        else { pre.want = true; $('dig').textContent = 'STOP'; page('dig'); sayG('DIGGING...') }
+        return;
+      }
+      pre.abort = true; while (pre.on) await sleep(50); // cambiaste los filtros: se descarta la precarga
+    }
+    if (auto !== true) autoSkip = 0;
+    if (!follow && dgAuth() && pre.rec && pre.sig === sigNow()){ const r = pre.rec; pre.rec = null; show(r, true); sayG('LISTO'); schedulePre(); return }
+  }
+  const mySig = silent ? sigNow() : '';
+  const say = (m, err) => { if (!silent || pre.want) sayG(m, err) };
+  const stop = () => stopReq || (silent && (pre.abort || sigNow() !== mySig));
+  if (!dgAuth()){ if (silent) return; page('setup'); say('PEGA TU TOKEN PRIMERO', true); return }
+  const tmin = +$('tmin').value || 0, tmax = +$('tmax').value || 0, vmin = +$('vmin').value || 0, vmax = +$('vmax').value || 0;
+  const hm = +$('hmax').value || 0, wm = +$('wmin').value || 0;
+  const originOn = !follow && $('local').checked && F.country.v.length > 0 && F.country.m === 'any';
+  const topic = $('topic').checked, needProbe = !!(tmin || tmax || F.key.v.length);
+  const ykey = store.get('dg_ykey', '') || (window.fd && fd.ytMeta && (vmin || vmax || topic || F.tags.v.length) ? '#yti' : '');
+  if ((vmin || vmax || topic || F.tags.v.length) && !ykey){ if (silent) return; page('setup'); say('ESE FILTRO NECESITA LA CLAVE DE YOUTUBE (F5)', true); return }
+  if (needProbe && !window.fd){ if (silent) return; say('TEMPO Y TONALIDAD SOLO EN LA APP DE ESCRITORIO', true); return }
+  if (silent){ pre.on = true; pre.abort = false; pre.want = false; pre.sig = mySig }
+  else { digging = true; stopReq = false; netFails = 0; $('dig').textContent = 'STOP'; page('dig') }
+  let probes = 0, shown = false, instChecked = 0; instNoQ = false;
+  const instOn = F.inst.v.length > 0 && F.inst.m !== 'not', instTxt = F.inst.v.join(F.inst.m === 'all' ? ' + ' : ' / ').toUpperCase();
+  const deliver = out => {
+    if (!silent){ show(out, true); say('LISTO'); shown = true; return }
+    if (stop()) return;
+    if (pre.want){ show(out, true); sayG('LISTO'); shown = true; return } // el flag se limpia al final
+    pre.rec = out; pre.sig = mySig;
+    if (out.vids[0]){ loadWave(out.vids[0].id, false); planStandby() } // onda y video del proximo disco quedan listos
+  };
+  // Revisa un disco: devuelve el disco listo, null si no sirve, o 'LIMIT' si se agoto el analisis
+  const attempt = async res => {
+    let rel = relMemo.get(res.id);
+    if (!rel){ rel = await soft('/releases/' + res.id, undefined, silent && !pre.want); if (rel){ relMemo.set(res.id, rel); if (relMemo.size > 300) relMemo.delete(relMemo.keys().next().value) } }
+    if (!rel || !relOk(rel, res)) return null;
+    if (instOn){ instChecked++; say('BUSCANDO ' + instTxt + ' · ' + instChecked + ' DISCOS REVISADOS...') }
+    if (!instOk(rel)) return null;
+    if (originOn && !(await originOk(rel))) return null;
+    let vids = instSort(rel, (rel.videos || []).map(v => ({ id: ytId(v.uri), title: v.title })).filter(v => v.id && !badIds.has(v.id)));
+    if (window.fd && vids.length){ try { const ok = await fd.embed(vids.map(v => v.id)); vids = vids.filter(v => ok[v.id] !== false) } catch {} }
+    if (ykey && vids.length){
+      const st = await ytInfo(vids.map(v => v.id), ykey);
+      vids.forEach(v => { v.views = st[v.id] ? st[v.id].views : null });
+      vids = vids.filter(v => vidOk(v, st[v.id], { vmin, vmax, topic }));
+    }
+    if ((vmin || vmax || topic || F.tags.v.length || needProbe || $('onlyvid').checked) && !vids.length) return null;
+    if (needProbe){
+      if (probes >= 8) return 'LIMIT';
+      probes++; say('ANALIZANDO AUDIO ' + probes + '/8...');
+      const r = await fd.probe(vids[0].id);
+      if (stop()) return null;
+      if (!r || r.error || !r.bpm) return null;
+      if ((tmin && r.bpm < tmin) || (tmax && r.bpm > tmax)) return null;
+      if (F.key.v.length){ const hit = F.key.v.map(low).includes(low(r.key)); if (F.key.m === 'not' ? hit : !hit) return null }
+      vids[0].bpm = r.bpm; vids[0].key = r.key;
+    }
+    return recOf(rel, res, vids);
+  };
+  try {
+    if (follow){
+      let out = null, checked = 0;
+      while (checked < 30 && !stop()){
+        const res = await followNext(follow);
+        if (!res) break;
+        if (hist.some(h => h.id === res.id)) continue;
+        checked++; say('SIGUIENDO ' + follow.name + ' · REVISANDO ' + checked + '/30...');
+        out = await attempt(res);
+        if (out) break;
+      }
+      if (stop()) return say('CANCELADO');
+      if (out === 'LIMIT'){ say('SIN RESULTADOS TRAS ANALIZAR 8 DISCOS', true); return }
+      if (out){ deliver(out); return }
+      const fin = fq && !fq.items.length && fq.page >= fq.pages;
+      say(fin ? 'NO HAY MAS DISCOS CON VIDEO DE ' + follow.name : 'SIN VIDEO EN ESTOS ' + checked + ' - TOCA DIG PARA SEGUIR', true);
+      return;
+    }
+    for (let round = 1; round <= (instOn ? 6 : 5); round++){
+      if (!instChecked) say('DIGGING... ROUND ' + round);
+      const p = baseParams();
+      const pk = JSON.stringify(p), memo = pagesMemo.get(pk);
+      let first = null, pages = memo && memo.t > Date.now() ? memo.n : 0;
+      if (!pages){
+        first = await api('/database/search', { ...p, page: 1 }, 0, silent && !pre.want);
+        if (stop()) return say('CANCELADO');
+        pages = first.results.length ? Math.min(first.pagination.pages, 100) : 0;
+        pagesMemo.set(pk, { n: pages, t: Date.now() + 30 * 60000 });
+        if (!pages){ if (p.q && !instNoQ) instNoQ = true; continue } // con el instrumento no hay nada: se sigue sin la palabra
+      }
+      const pg = 1 + rnd(pages);
+      const data = pg === 1 && first ? first : await api('/database/search', { ...p, page: pg }, 0, silent && !pre.want); // 1 consulta en vez de 2
+      if (stop()) return say('CANCELADO');
+      if (!data.results.length){ pagesMemo.delete(pk); continue }
+      const pool = data.results.filter(r => !hist.some(h => h.id === r.id) && !(r.community && ((hm && r.community.have > hm) || (wm && r.community.want < wm)))).sort(() => Math.random() - .5);
+      const cand = pool.slice(0, instOn ? 18 : (hm || wm) ? 12 : 5), par = needProbe ? 1 : 3; // 3 discos a la vez (con analisis, de a uno)
+      for (let i = 0; i < cand.length; i += par){
+        if (stop()) return say('CANCELADO');
+        const rs = await Promise.allSettled(cand.slice(i, i + par).map(attempt));
+        if (stop()) return say('CANCELADO');
+        const good = rs.find(x => x.status === 'fulfilled' && x.value && x.value !== 'LIMIT');
+        if (good){ deliver(good.value); return }
+        const bad = rs.find(x => x.status === 'rejected'); if (bad) throw bad.reason;
+        if (rs.some(x => x.value === 'LIMIT')){ say('SIN RESULTADOS TRAS ANALIZAR 8 DISCOS', true); return }
+      }
+    }
+    say(instOn ? 'NINGUN DISCO CON ' + instTxt + ' EN LOS CREDITOS (' + instChecked + ' REVISADOS) - TOCA DIG PARA SEGUIR' : 'SIN RESULTADOS - AFLOJA LOS FILTROS', true);
+  } catch (e){ say(String(e.message || e).toUpperCase(), true) }
+  finally {
+    if (silent){ const w = pre.want; pre.on = false; pre.want = false; if (w) $('dig').textContent = 'DIG' }
+    else { digging = false; $('dig').textContent = 'DIG' }
+    if (shown) schedulePre();
+  }
+}
+
+function recOf(rel, res, vids){
+  return {
+    id: res.id, title: rel.title,
+    artist: (rel.artists || []).map(a => a.name.replace(/ \(\d+\)$/, '')).join(', '),
+    year: rel.year || res.year || '', country: rel.country || res.country || '',
+    label: (rel.labels || []).map(l => l.name + (l.catno ? ' ' + l.catno : '')).slice(0, 2).join(' / '),
+    genres: rel.genres || [], styles: rel.styles || [], vids, url: rel.uri,
+    have: rel.community ? rel.community.have : null, want: rel.community ? rel.community.want : null, credits: buildCredits(rel)
+  };
+}
+function show(d, push){
+  current = d; disarm(); page('dig');
+  $('empty').hidden = true; $('info').hidden = false;
+  $('lTitle').textContent = d.title; $('lTitle').classList.toggle('long', d.title.length > 40);
+  $('lArtist').textContent = d.artist;
+  $('lInfo').textContent = [d.year, d.country].filter(Boolean).join(' / ');
+  $('lLabel').textContent = d.label;
+  $('lTags').textContent = [...d.genres, ...d.styles].join(' / ');
+  renderCred(d);
+  $('lVid').textContent = ''; { const v0 = d.vids.find(v => v.bpm); $('lBpm').textContent = v0 ? '~' + v0.bpm + ' BPM / ' + v0.key.toUpperCase() : '' }
+  $('vids').replaceChildren(...d.vids.map((v, i) => { const b = document.createElement('button'); b.className = 'key'; b.textContent = (v.title || 'VIDEO ' + (i + 1)) + (v.views != null ? ' · ' + nViews(v.views) : ''); b.onclick = () => play(i); return b }));
+  if (d.vids.length) play(0); else { ytPost({ event: 'command', func: 'stopVideo', args: [] }); vidId = null; dur = 0; ph = 0; drawWave(); trkInfo() }
+  favBtn();
+  if (push){ hist = [d, ...hist.filter(h => h.id !== d.id)].slice(0, 40); store.set('dg_hist', hist); }
+}
+function play(i){
+  const nid = current.vids[i].id;
+  vidPrev = vidId; curVid = i; vidId = nid; ph = 0; dur = waveDur[nid] || 0;
+  startVideo(nid); scheduleWave(vidId); planStandby();
+  playedOk = false; clearTimeout(watchT); watchT = setTimeout(() => watchPlay(i, 0), 8000);
+  { const n = current.vids.length, v = current.vids[i]; $('lVid').textContent = 'VIDEO ' + (i + 1) + '/' + n + (v.views != null ? ' · ' + nViews(v.views) : '') }
+  [...$('vids').children].forEach((b, j) => b.classList.toggle('on', j === i));
+  trkInfo();
+}
+const favBtn = () => { $('fav').textContent = current && favs.some(f => f.id === current.id) ? 'SAVED ★' : 'SAVE' };
+$('fav').onclick = () => {
+  if (!current) return;
+  favs = favs.some(f => f.id === current.id) ? favs.filter(f => f.id !== current.id) : [current, ...favs];
+  store.set('dg_favs', favs); favBtn(); say('FAVORITOS: ' + favs.length);
+};
+$('fold').onclick = () => window.fd ? fd.open() : say('SOLO DISPONIBLE EN LA APP DE ESCRITORIO', true);
+$('dc').onclick = () => { if (current) window.open(current.url || 'https://www.discogs.com/release/' + current.id) };
+$('dig').onclick = dig;
+
+function renderList(el, arr, canRemove){
+  if (!arr.length){ el.textContent = 'TODAVIA NO HAY NADA'; return }
+  el.replaceChildren(...arr.map(d => {
+    const row = document.createElement('div'); row.className = 'row';
+    const b = document.createElement('button'); b.className = 'li';
+    b.innerHTML = '<span></span><span></span>';
+    b.children[0].textContent = d.artist + ' - ' + d.title;
+    b.children[1].textContent = d.year || '';
+    b.onclick = () => show(d, false);
+    row.append(b);
+    if (canRemove){
+      const x = document.createElement('button'); x.className = 'li'; x.style.width = 'auto'; x.textContent = 'X'; x.setAttribute('aria-label', 'Quitar');
+      x.onclick = () => { favs = favs.filter(f => f.id !== d.id); store.set('dg_favs', favs); renderLists(); favBtn() };
+      row.append(x);
+    }
+    return row;
+  }));
+}
+function renderLists(){ renderList($('p-favs'), favs, true); renderList($('p-hist'), hist, false) }
+
+// Descargas
+const fmtUi = () => { [...$('fmt').children].forEach(b => b.classList.toggle('on', b.dataset.f === fmt)); if (!busy && !armFile) $('dl1').textContent = window.FD_WEB ? 'ABRIR EN YOUTUBE' : 'DESCARGAR ' + fmt.toUpperCase() };
+// FLAC en la PC; en el celu ese boton es ORIG (el audio original, sin convertir)
+if (window.Android){ const b = document.querySelector('#fmt [data-f="flac"]'); if (b){ b.dataset.f = 'm4a'; b.textContent = 'ORIG' } if (fmt === 'flac') fmt = 'm4a' }
+else if (fmt === 'm4a') fmt = 'flac';
+$('fmt').onclick = e => { if (e.target.dataset.f){ fmt = e.target.dataset.f; store.set('dg_fmt', fmt); fmtUi() } };
+const clean = t => String(t || '').replace(/[\\/:*?"<>|%]/g, '').trim();
+async function download(){
+  if (busy) return;
+  if (!current || !current.vids.length){ say('DIG A RECORD WITH VIDEO FIRST', true); return }
+  if (!window.fd){ say('SOLO DISPONIBLE EN LA APP DE ESCRITORIO', true); return }
+  busy = true; $('dl1').disabled = true; $('dl1').textContent = 'BAJANDO...';
+  try {
+    const v = current.vids[curVid];
+    const name = clean(current.artist + ' - ' + current.title + (current.year ? ' (' + current.year + ')' : '')) + (current.vids.length > 1 ? ' - ' + clean(v.title || 'Video ' + (curVid + 1)) : '');
+    lbl = 'BAJANDO'; say(lbl + '...');
+    const r = await fd.download({ id: v.id, name, fmt });
+    if (r.error){ say('ERROR: ' + r.error, true); return }
+    files = [{ file: r.file, name: r.file.split(/[\\/]/).pop(), bpm: r.bpm, key: r.key }, ...files.filter(f => f.file !== r.file)].slice(0, 30);
+    store.set('dg_files', files); renderFiles();
+    if (r.bpm) $('lBpm').textContent = r.bpm + ' BPM / ' + r.key;
+    arm(r.file); say(window.fdShare ? 'LISTO - TOCA EL BOTON PARA COMPARTIR' : 'LISTO - ARRASTRA EL BOTON AL DAW');
+  } finally { busy = false; $('dl1').disabled = false; fmtUi() }
+}
+function renderFiles(){
+  const el = $('files');
+  if (!files.length){ el.innerHTML = '<span class="empty">SIN DESCARGAS TODAVIA</span>'; return }
+  el.replaceChildren(...files.map(f => {
+    const d = document.createElement('div'); d.className = 'f'; d.draggable = true; d.title = 'Arrastra a tu DAW';
+    const t = document.createElement('span'); t.className = 'fn'; t.textContent = f.name;
+    const x = document.createElement('button'); x.type = 'button'; x.className = 'fx'; x.textContent = '✕'; x.setAttribute('aria-label', 'Quitar de la lista');
+    x.onclick = e => { e.stopPropagation(); files = files.filter(y => y.file !== f.file); store.set('dg_files', files); renderFiles() };
+    if (window.fdShare) d.onclick = () => fdShare(f.file);
+    d.append(t, x);
+    d.ondragstart = e => { e.preventDefault(); fd.drag(f.file) };
+    return d;
+  }));
+}
+function arm(file){
+  armFile = file;
+  const b = $('dl1'); b.textContent = window.fdShare ? 'COMPARTIR / ABRIR' : 'ARRASTRA AL DAW'; b.classList.add('arm'); b.draggable = true;
+}
+function disarm(){
+  armFile = null;
+  const b = $('dl1'); b.classList.remove('arm'); b.draggable = false; fmtUi();
+}
+$('dl1').ondragstart = e => { if (!armFile) return; e.preventDefault(); fd.drag(armFile) };
+$('dl1').onclick = () => armFile ? (window.fdShare ? fdShare(armFile) : disarm()) : download();
+// Navegacion de temas (idea de un amigo): flechas en cada margen de la onda.
+// ▶ = siguiente tema del disco; si era el ultimo, DIG trae otro disco (con tus filtros).
+// ◀ = tema anterior; si estas en el primero, vuelve al disco anterior del historial.
+const okIdx = (from, d) => { if (!current) return -1; for (let i = from + d; i >= 0 && i < current.vids.length; i += d) if (!current.vids[i].bad) return i; return -1 };
+function trkInfo(){
+  const el = $('wTrk'); if (!el) return;
+  if (!current || !current.vids.length){ el.textContent = '▶ = DIG'; return }
+  const n = current.vids.length, last = okIdx(curVid, 1) < 0;
+  el.textContent = 'TEMA ' + (curVid + 1) + '/' + n + (last ? ' · ▶ OTRO DISCO' : '');
+}
+function nextTrack(){
+  if (digging) return;
+  const j = okIdx(curVid, 1);
+  if (current && j >= 0) play(j); else dig();
+}
+function prevTrack(){
+  if (digging || !current) return;
+  const j = okIdx(curVid, -1);
+  if (j >= 0){ play(j); return }
+  const i = hist.findIndex(h => h.id === current.id), prev = i >= 0 ? hist[i + 1] : null;
+  if (prev){ show(prev, false); say('DISCO ANTERIOR') } else say('NO HAY DISCO ANTERIOR', true);
+}
+// ◀◀ / ▶▶ = saltar de disco directo, sin pasar por los temas.
+// ◀◀ vuelve al disco anterior del historial. ▶▶ avanza si habias vuelto atras; si no, DIG trae uno nuevo.
+function prevRecord(){
+  if (digging) return;
+  const i = current ? hist.findIndex(h => h.id === current.id) : -1, prev = current ? (i >= 0 ? hist[i + 1] : hist[0]) : hist[0];
+  if (prev){ show(prev, false); say('DISCO ANTERIOR') } else say('NO HAY DISCO ANTERIOR', true);
+}
+function nextRecord(){
+  if (digging) return;
+  const i = current ? hist.findIndex(h => h.id === current.id) : -1;
+  if (i > 0){ show(hist[i - 1], false); say('DISCO SIGUIENTE') } else dig();
+}
+const vstep = d => d > 0 ? nextTrack() : prevTrack();
+// idioma: espanol o ingles de Nueva York (arranca con el del equipo)
+$('langBtn').textContent = window.FD_LANG === 'en' ? '[LANGUAGE: NYC ENGLISH]' : '[IDIOMA: ESPAÑOL]';
+$('langBtn').onclick = () => window.fdSetLang(window.FD_LANG === 'en' ? 'es' : 'en');
+$('manualBtn').onclick = () => window.open(window.FD_LANG === 'en' ? 'manual-en.html' : 'manual.html');
+const updMsg = r => ({ noconfig: 'SIN LINK', uptodate: 'AL DIA · V' + r.version, ready: 'ACTUALIZACION V' + r.version + ' LISTA' + (r.notes ? ' · ' + r.notes : ''), full: 'HAY UNA VERSION COMPLETA NUEVA (V' + r.version + ')', error: r.text || 'ERROR' }[r.state] || '');
+function updShow(r){
+  $('updTxt').textContent = updMsg(r);
+  if (r.state === 'ready') say('ACTUALIZACION V' + r.version + ' LISTA - SE USA AL REABRIR (O EN F5 SETUP)');
+  if (r.state === 'full') say('HAY UNA VERSION NUEVA PARA DESCARGAR (F5 SETUP)');
+  $('updGo').hidden = r.state !== 'ready'; $('updFull').hidden = !(r.state === 'full' && r.full); $('updFull').dataset.url = r.full || '';
+  if (r.state === 'ready') say('ACTUALIZACION V' + r.version + ' LISTA - F5 SETUP');
+  else if (r.state === 'full') say('VERSION COMPLETA NUEVA DISPONIBLE - F5 SETUP');
+}
+if (window.fd){
+  fd.updGet().then(g => { $('updUrl').value = g.url || g.fileUrl || ''; $('verTxt').textContent = 'FIYODIGGER V' + g.version + ' · DIGGING CENTER RFL' });
+  fd.onUpd(updShow);
+  $('updUrl').onchange = e => { fd.updSet(e.target.value.trim()); say('LINK GUARDADO') };
+  $('updBtn').onclick = async () => { $('updTxt').textContent = 'BUSCANDO...'; updShow(await fd.updCheck()) };
+  $('updGo').onclick = () => fd.updRestart();
+  $('updFull').onclick = () => { const u = $('updFull').dataset.url; fd.openUrl ? fd.openUrl(u) : window.open(u) };
+}
+$('diagBtn').onclick = async () => {
+  if (!window.fd){ say('SOLO EN LA APP DE ESCRITORIO', true); return }
+  const d = await fd.diag();
+  $('diag').textContent = 'MEMORIA ' + d.memMB + ' MB · PROCESOS ' + d.procs + ' · ONDAS ' + Object.keys(waves).length + (d.waveMs ? ' · ULT. ONDA ' + (d.waveMs / 1000).toFixed(1) + ' S' + (d.waveWay ? ' (' + d.waveWay.toUpperCase() + ')' : '') : '') + (d.cool ? ' · YOUTUBE EN PAUSA ' + d.cool + 'S' : '') + (d.lastErr ? ' · ULT. ERROR ' + d.lastErr : '');
+};
+$('resetBtn').onclick = async () => { if (!window.fd) return; await fd.reset(); waveFails = 0; waveHold = 0; dHits.length = 0; dHold = 0; netFails = 0; say('MOTOR REINICIADO') };
+$('logBtn').onclick = () => window.fd && fd.log();
+$('vPrev').onclick = () => vstep(-1); $('vNext').onclick = () => vstep(1);
+$('wPrev').onclick = prevTrack; $('wNext').onclick = nextTrack; $('rPrev').onclick = prevRecord; $('rNext').onclick = nextRecord; trkInfo();
+$('padDone').onclick = () => $('editPads').onclick();
+$('folderOpen').onclick = () => window.fd && fd.open();
+$('folderBtn').onclick = async () => { if (!window.fd) return; const f = await fd.pick(); if (f) $('folderBtn').textContent = f };
+fmtUi(); renderFiles();
+if (window.fd){
+  fd.onDragEnd(disarm);
+  fd.onPct(p => say((lbl || 'BAJANDO') + ' ' + Math.round(p) + '%'));
+  fd.folder().then(f => { $('folderBtn').textContent = f });
+  fd.engine().then(t => { $('engine').textContent = t; if (!busy && dgAuth()) say(t) });
+}
+
+// Radar de rareza y seguir creditos
+let follow = null;
+const RL = { ARR: 'ARREGLO', PROD: 'PRODUCTOR', DIR: 'DIRECTOR', COMP: 'COMPOSITOR', ENG: 'INGENIERO' }, rl = r => RL[r] || r;
+const ROLES = [[/arrang/i, 'ARR'], [/produc/i, 'PROD'], [/conduct/i, 'DIR'], [/compos|written|music by/i, 'COMP'], [/engineer|mix|record/i, 'ENG']];
+function buildCredits(rel){
+  const cr = [], seen = new Set();
+  const add = (t, id, name, role) => { const k = t + id; if (!id || seen.has(k) || cr.length >= 6) return; seen.add(k); cr.push({ t, id, name: String(name).replace(/ \(\d+\)$/, ''), role }) };
+  (rel.artists || []).slice(0, 1).forEach(a => { if (a.id !== 194) add('artist', a.id, a.name, 'ARTISTA') });
+  (rel.labels || []).slice(0, 1).forEach(l => add('label', l.id, l.name, 'SELLO'));
+  (rel._inst || []).forEach(o => o.h.slice(0, rel._inst.length > 1 ? 1 : 2).forEach(c => add('artist', c.who.id, c.who.name, o.x.name.toUpperCase())));
+  ROLES.forEach(([re, tag]) => (rel.extraartists || []).forEach(a => { if (re.test(a.role || '')) add('artist', a.id, a.name, tag) }));
+  return cr;
+}
+function renderCred(d){
+  $('lRare').textContent = d.have != null && d.want != null ? 'HAVE ' + d.have + ' · WANT ' + d.want + ' · RAREZA x' + (d.want / Math.max(d.have, 1)).toFixed(1) : '';
+  $('lCred').replaceChildren(...(d.credits || []).map(c => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'li'; b.title = 'Hacer digging de ' + c.name;
+    b.textContent = rl(c.role) + ': ' + c.name + ' ›';
+    b.onclick = () => { setFollow(c); dig() };
+    return b;
+  }));
+  if (window.fd && fd.samples) fd.samples(d).then(list => {
+    if (!current || current.id !== d.id || !list || !list.length) return;
+    $('lCred').append(...list.map(s => {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'li'; b.title = 'Buscar el sample en Discogs';
+      b.textContent = (s.dir === 'in' ? 'SAMPLEADO POR: ' : 'SAMPLEA: ') + [s.artist, s.title].filter(Boolean).join(' - ') + ' ›';
+      b.onclick = () => openSample(s);
+      return b;
+    }));
+  }).catch(() => {});
+}
+// Samples: busca en Discogs el disco del tema sampleado (o del que te sampleo) y lo pone a sonar
+async function openSample(s){
+  if (digging) return;
+  digging = true; stopReq = false; setFollow(null); say('BUSCANDO SAMPLE...');
+  try {
+    let res = (await api('/database/search', { type: 'release', ...(s.artist ? { artist: s.artist } : {}), track: s.title, per_page: 10 })).results || [];
+    if (!res.length) res = (await api('/database/search', { type: 'release', q: [s.artist, s.title].filter(Boolean).join(' '), per_page: 10 })).results || [];
+    for (const r of res.slice(0, 5)){
+      const rel = await api('/releases/' + r.id);
+      const vids = (rel.videos || []).map(v => ({ id: ytId(v.uri), title: v.title })).filter(v => v.id && !badIds.has(v.id));
+      if (!vids.length) continue;
+      const i = vids.findIndex(v => low(v.title).includes(low(s.title)));
+      if (i > 0) vids.unshift(...vids.splice(i, 1));
+      show(recOf(rel, r, vids), true); say('SAMPLE: ' + [s.artist, s.title].filter(Boolean).join(' - ').toUpperCase());
+      return;
+    }
+    say('SAMPLE NO ENCONTRADO EN DISCOGS', true);
+  } catch (e){ say(String(e.message || e).toUpperCase(), true) }
+  finally { digging = false }
+}
+function setFollow(c){ if (!c || !follow || follow.t + follow.id !== c.t + c.id) fq = null; follow = c; $('lFollow').hidden = !c; if (c) $('lFollowTxt').textContent = 'SIGUIENDO ' + rl(c.role) + ': ' + c.name }
+$('followOff').onclick = () => { setFollow(null); say('SEGUIR: OFF') };
+
+// Forma de onda y saltos
+try { localStorage.removeItem('dg_waves') } catch {} // las ondas ahora viven en disco con precision completa
+const waveDur = {};
+let waves = {}, waveWant = null, waveState = '', waveFails = 0, waveHold = 0, wRaf = 0;
+let ph = 0, dur = 0, vidId = null;
+const cv = $('wave');
+function drawWave(){ if (wRaf) return; wRaf = requestAnimationFrame(() => { wRaf = 0; drawWaveNow() }) }
+// Las barras se dibujan una vez en una capa aparte; cada cuadro solo copia esa capa (no recalcula 480 barras)
+let inkC = '', wLayer = null, wKey = '';
+function drawWaveNow(){
+  const W = Math.max(cv.clientWidth * 2, 400), H = 80;
+  if (cv.width !== W) cv.width = W;
+  if (cv.height !== H) cv.height = H;
+  const c = cv.getContext('2d');
+  if (!inkC) inkC = getComputedStyle(document.documentElement).getPropertyValue('--lcdink').trim() || '#19220f';
+  const pk = waves[vidId], fr = dur ? Math.min(ph / dur, 1) : 0;
+  c.clearRect(0, 0, W, H); c.fillStyle = inkC;
+  if (pk){
+    const k = vidId + '|' + W + '|' + inkC;
+    if (wKey !== k){
+      wLayer = wLayer || document.createElement('canvas'); wLayer.width = W; wLayer.height = H;
+      const g = wLayer.getContext('2d'), n = pk.length, bw = W / n;
+      g.clearRect(0, 0, W, H); g.fillStyle = inkC;
+      pk.forEach((v, i) => { const hh = Math.max(3, v * (H - 18)); g.fillRect(i * bw, (H + 14 - hh) / 2, Math.max(bw - 1, 1), hh) });
+      wKey = k;
+    }
+    c.globalAlpha = .55; c.drawImage(wLayer, 0, 0);
+    const px = Math.round(W * fr);
+    if (px > 0){ c.globalAlpha = 1; c.drawImage(wLayer, 0, 0, px, H, 0, 0, px, H) }
+  }
+  else { c.globalAlpha = .35; c.fillRect(0, H / 2 + 6, W, 3); c.globalAlpha = 1; c.fillRect(0, H / 2 + 6, W * fr, 3);
+    if (waveState){ c.globalAlpha = .7; c.font = '18px LCD'; c.fillText((window.fdT || (x => x))(waveState === 'loading' ? 'ANALIZANDO ONDA...' : waveState === 'hold' ? 'ONDA EN PAUSA' : 'SIN ONDA'), W / 2 - 70, H / 2 - 4) } }
+  c.globalAlpha = 1; c.font = '20px LCD';
+  [.25, .5, .75].forEach(q => { c.fillRect(W * q - 1, 16, 2, H - 16); c.fillText(Math.round(q * 100) + '%', W * q + 6, 15) });
+  c.fillRect(W * fr - 2, 16, 4, H - 16);
+}
+// Reproductor doble: uno suena y el otro deja listo el proximo video (solo lo prepara, no baja el video).
+// Cambiar de video reutiliza el reproductor abierto en vez de recargarlo de cero. La calidad la elige YouTube como siempre.
+const embedUrl = (id, auto) => 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=' + (auto ? 1 : 0) + '&rel=0&enablejsapi=1&playsinline=1&origin=' + encodeURIComponent(location.origin);
+const postTo = (fr, o) => { const w = fr && fr.contentWindow; if (w) w.postMessage(JSON.stringify(o), '*') };
+const ytPost = o => postTo($('player'), o);
+const listenTo = fr => postTo(fr, { event: 'listening', id: 1, channel: 'widget' });
+const listen = () => listenTo($('player'));
+let sbId = null, sbT = null;
+['player', 'player2'].forEach(k => { const fr = $(k); fr._ready = false; fr.addEventListener('load', () => { fr._ready = false; listenTo(fr); setTimeout(() => listenTo(fr), 800); setTimeout(() => listenTo(fr), 2500) }) });
+function cueStandby(id){
+  const sb = $('player2');
+  if (!id || sbId === id || id === vidId) return;
+  sbId = id;
+  if (sb._ready) postTo(sb, { event: 'command', func: 'cueVideoById', args: [id, 0] });
+  else sb.src = embedUrl(id, false);
+}
+// Que dejar preparado: el primer video del proximo disco (DIG) o, si no hay, el siguiente video de este disco
+function planStandby(){
+  clearTimeout(sbT);
+  sbT = setTimeout(() => {
+    const nx = pre.rec && pre.rec.vids[0] ? pre.rec.vids[0].id : (current && current.vids.length > 1 ? current.vids[(curVid + 1) % current.vids.length].id : null);
+    if (nx) cueStandby(nx);
+  }, 2500);
+}
+function startVideo(id){
+  const act = $('player'), sb = $('player2');
+  if (sbId === id && sb._ready){
+    // el video ya estaba preparado: se intercambian los reproductores
+    postTo(act, { event: 'command', func: 'pauseVideo', args: [] });
+    act.id = 'player2'; sb.id = 'player';
+    sbId = vidPrev; // el anterior queda listo por si volves
+    listen(); ytPost({ event: 'command', func: 'playVideo', args: [] });
+    return 'swap';
+  }
+  if (act._ready && /\/embed\//.test(act.src || '')){ ytPost({ event: 'command', func: 'loadVideoById', args: [id, 0] }); return 'reuse' }
+  act.src = embedUrl(id, true); return 'load';
+}
+let vidPrev = null;
+addEventListener('message', e => {
+  if (!/youtube/.test(e.origin)) return;
+  let d; try { d = typeof e.data === 'string' ? JSON.parse(e.data) : e.data } catch { return }
+  const act = $('player'), sb = $('player2');
+  if (sb && e.source === sb.contentWindow){
+    if (d && (d.event === 'onReady' || d.event === 'infoDelivery' || d.event === 'initialDelivery')) sb._ready = true;
+    if (d && d.event === 'onReady') listenTo(sb);
+    if (d && d.event === 'onError') sbId = null; // el preparado fallo: se cargara normal (y ahi se descarta si esta bloqueado)
+    return;
+  }
+  if (!act || e.source !== act.contentWindow) return;
+  if (d && (d.event === 'onReady' || d.event === 'infoDelivery' || d.event === 'initialDelivery')) act._ready = true;
+  msgSeen = true;
+  const vd = d && d.info && d.info.videoData, other = vd && vd.video_id && vd.video_id !== vidId; // ignora datos del video anterior
+  if (d && d.event === 'onStateChange' && [1, 2, 3, 5].includes(+d.info)) playedOk = true;
+  if (d && d.event === 'infoDelivery' && d.info && !other){ if ([1, 2, 3, 5].includes(d.info.playerState)) playedOk = true; if (d.info.playerState === 1) autoSkip = 0; if (d.info.duration) dur = d.info.duration; if (d.info.currentTime != null) ph = d.info.currentTime; drawWave() }
+  else if (d && d.event === 'onReady') listen();
+  else if (d && d.event === 'onError') badVideo(d.info);
+});
+const seekFrac = q => {
+  if (!dur){ say('ESPERA QUE CARGUE EL VIDEO', true); return }
+  ytPost({ event: 'command', func: 'seekTo', args: [dur * Math.max(0, Math.min(q, .999)), true] }); ytPost({ event: 'command', func: 'playVideo', args: [] });
+};
+document.querySelectorAll('#wavebox [data-j]').forEach(b => { b.onclick = () => seekFrac(+b.dataset.j) });
+cv.onclick = e => { const r = cv.getBoundingClientRect(); seekFrac((e.clientX - r.left) / r.width) };
+// La onda se pide apenas arranca el video (el actual pasa primero). Las ya hechas salen del disco al instante.
+const waveFly = new Set();
+function keepWave(id, r){
+  waves[id] = r.peaks; if (r.dur) waveDur[id] = r.dur;
+  const ks = Object.keys(waves); if (ks.length > 400){ delete waves[ks[0]]; delete waveDur[ks[0]] } // en memoria, solo las recientes
+}
+function loadWave(id, hi){
+  if (!window.fd || !id || waves[id] || waveFly.has(id)) return;
+  waveFly.add(id);
+  Promise.race([fd.wave(id, !!hi), new Promise(res => setTimeout(() => res({ error: 'TIMEOUT' }), 130000))]).then(r => {
+    if (r && r.peaks){
+      keepWave(id, r); if (!r.cached) waveFails = 0;
+      if (id === vidId){ if (!dur) dur = r.dur; waveState = ''; setTimeout(preloadWaves, r.cached ? 0 : 800) }
+    } else if (r && r.error === 'VIDEO NO DISPONIBLE'){
+      badIds.add(id); store.set('dg_bad', [...badIds].slice(-600));
+      if (pre.rec && pre.rec.vids.some(v => v.id === id)){ pre.rec.vids = pre.rec.vids.filter(v => v.id !== id); if (!pre.rec.vids.length){ pre.rec = null; schedulePre() } else planStandby() }
+      if (id === vidId && current && current.vids[curVid] && current.vids[curVid].id === id) badVideo(150);
+    } else if (hi || id === vidId){
+      waveFails++;
+      if (r && r.error === 'PAUSA') waveHold = Date.now() + (r.cool || 240) * 1000;
+      else if (waveFails >= 3){ waveHold = Date.now() + 45000; waveFails = 0 }
+      if (id === vidId) waveState = waveHold > Date.now() ? 'hold' : 'error';
+    }
+  }).catch(() => { if (id === vidId) waveState = 'error' }).finally(() => { waveFly.delete(id); if (id === vidId) drawWave() });
+}
+// Las ondas de los otros videos del mismo disco se piden de fondo (si estan en disco, no cuestan nada)
+function preloadWaves(){ if (document.documentElement.classList.contains('mob')) return; if (current && waves[vidId]) current.vids.slice(0, 4).forEach(v => { if (v.id !== vidId) loadWave(v.id, false) }) }
+function scheduleWave(id){
+  waveWant = id;
+  if (waves[id] || !window.fd){ waveState = ''; drawWave(); setTimeout(preloadWaves, 300); return }
+  waveState = Date.now() < waveHold ? 'hold' : 'loading'; drawWave(); loadWave(id, true); // aunque YouTube este en pausa, el disco responde
+}
+
+// Skins
+// Cada parte se pinta por separado; los MODELOS son combos originales que cambian todo de una
+const SK = {
+  c: [['', 'GRIS'], ['cs-black', 'NEGRA'], ['cs-cream', 'CREMA'], ['cs-olive', 'MILITAR'], ['cs-char', 'CARBON'], ['cs-white', 'BLANCA'], ['cs-sand', 'ARENA'], ['cs-navy', 'AZUL MARINO'], ['cs-wine', 'BORDO'], ['cs-orange', 'NARANJA'], ['cs-teal', 'PETROLEO'], ['cs-violet', 'VIOLETA']],
+  m: [['', 'METAL GASTADO'], ['mat-brushed', 'METAL CEPILLADO'], ['mat-rubber', 'GOMA TEXTURADA'], ['mat-wood', 'MADERA'], ['mat-carbon', 'CARBONO'], ['mat-alu', 'ALUMINIO'], ['mat-chrome', 'CROMO'], ['mat-gold', 'DORADO'], ['mat-copper', 'COBRE'], ['mat-leather', 'CUERO']],
+  l: [['', 'VERDE'], ['lcd-amber', 'AMBAR'], ['lcd-blue', 'AZUL'], ['lcd-red', 'ROJA'], ['lcd-white', 'BLANCA'], ['lcd-violet', 'VIOLETA'], ['lcd-orange', 'NARANJA'], ['lcd-cyan', 'CIAN'], ['lcd-inv', 'NEGRA FOSFORO'], ['lcd-invam', 'NEGRA AMBAR']],
+  p: [['', 'GRAFITO'], ['pad-cream', 'CREMA'], ['pad-black', 'NEGROS'], ['pad-white', 'BLANCOS'], ['pad-red', 'ROJOS'], ['pad-blue', 'AZULES'], ['pad-olive', 'OLIVA'], ['pad-orange', 'NARANJAS']],
+  k: [['', 'ROJO'], ['key-orange', 'NARANJA'], ['key-gold', 'DORADO'], ['key-cream', 'CREMA'], ['key-blue', 'AZUL'], ['key-green', 'VERDE'], ['key-cyan', 'CIAN'], ['key-violet', 'VIOLETA']]
+};
+const MODELS = [
+  ['ORIGINAL', { c: '', m: '', l: '', p: '', k: '' }],
+  ['BOOGIE DOWN', { c: 'cs-black', m: 'mat-brushed', l: 'lcd-invam', p: 'pad-black', k: 'key-orange' }],
+  ['BASEMENT TAPES', { c: '', m: 'mat-wood', l: 'lcd-amber', p: 'pad-cream', k: 'key-cream' }],
+  ['COLD CRUSH', { c: 'cs-white', m: 'mat-brushed', l: 'lcd-cyan', p: 'pad-white', k: 'key-blue' }],
+  ['MIDNIGHT DIG', { c: 'cs-char', m: 'mat-carbon', l: 'lcd-inv', p: 'pad-black', k: 'key-green' }],
+  ['BORDO SOUL', { c: 'cs-wine', m: '', l: 'lcd-white', p: 'pad-cream', k: 'key-gold' }],
+  ['NAVY CRATES', { c: 'cs-navy', m: 'mat-brushed', l: 'lcd-cyan', p: 'pad-blue', k: 'key-cream' }],
+  ['FATIGUES', { c: 'cs-olive', m: 'mat-rubber', l: 'lcd-amber', p: 'pad-olive', k: 'key-orange' }],
+  ['DESERT LOOP', { c: 'cs-sand', m: '', l: 'lcd-orange', p: 'pad-cream', k: 'key-orange' }],
+  ['NEON 2099', { c: 'cs-violet', m: 'mat-brushed', l: 'lcd-violet', p: 'pad-black', k: 'key-cyan' }],
+  ['TEAL WAX', { c: 'cs-teal', m: 'mat-brushed', l: 'lcd-white', p: 'pad-white', k: 'key-gold' }],
+  ['HOT WAX', { c: 'cs-orange', m: 'mat-rubber', l: 'lcd-red', p: 'pad-black', k: 'key-cream' }]
+];
+const SK_LBL = { c: 'CARCASA', m: 'MATERIAL', l: 'PANTALLA', p: 'PADS', k: 'BOTONES Y LEDS' };
+let skin = (() => {
+  const s0 = store.get('dg_skin', {}), out = { c: '', m: '', l: '', p: '', k: '' };
+  for (const k of Object.keys(out)){ const v = s0[k]; out[k] = typeof v === 'number' ? ((SK[k][v] || SK[k][0])[0]) : (SK[k].some(x => x[0] === v) ? v : '') } // migra el formato viejo (numeros)
+  return out;
+})();
+const allSkinCls = Object.values(SK).flat().map(x => x[0]).filter(Boolean);
+const modelOf = () => { const i = MODELS.findIndex(([, v]) => Object.keys(v).every(k => v[k] === skin[k])); return i };
+function applySkin(){
+  const h = document.documentElement.classList;
+  h.remove(...allSkinCls);
+  Object.values(skin).forEach(c => { if (c) h.add(c) });
+  const nm = k => (SK[k].find(x => x[0] === skin[k]) || SK[k][0])[1];
+  $('skinCase').textContent = '[CARCASA: ' + nm('c') + ']'; $('skinMat').textContent = '[MATERIAL: ' + nm('m') + ']';
+  $('skinLcd').textContent = '[PANTALLA: ' + nm('l') + ']'; $('skinPad').textContent = '[PADS: ' + nm('p') + ']'; $('skinKey').textContent = '[BOTONES Y LEDS: ' + nm('k') + ']';
+  const mi = modelOf(); $('skinModel').textContent = '[MODELO: ' + (mi >= 0 ? MODELS[mi][0] : 'PERSONALIZADO') + ']';
+  store.set('dg_skin', skin); inkC = ''; wKey = ''; drawWave();
+}
+const rot = k => () => { const L = SK[k], i = L.findIndex(x => x[0] === skin[k]); skin[k] = L[(i + 1) % L.length][0]; applySkin(); say(SK_LBL[k] + ': ' + (L[(i + 1) % L.length][1])) };
+$('skinCase').onclick = rot('c'); $('skinMat').onclick = rot('m'); $('skinLcd').onclick = rot('l'); $('skinPad').onclick = rot('p'); $('skinKey').onclick = rot('k');
+$('skinModel').onclick = () => { const i = modelOf(), n = MODELS[(i + 1) % MODELS.length]; skin = { ...n[1] }; applySkin(); say('MODELO: ' + n[0]) };
+applySkin();
+
+function fit(){ if (document.documentElement.classList.contains('mob')){ if (ddc) ddPlace(); return } const vv = window.visualViewport, W = vv ? Math.min(innerWidth, vv.width) : innerWidth, Hh = vv ? Math.min(innerHeight, vv.height) : innerHeight; const kx = W / 1600, ky = Hh / 1000, k = Math.min(kx, ky); /* si la ventana es casi 16:10, el panel la llena entera (sin franjas negras) */ $('stage').style.transform = 'translate(-50%,-50%) scale(' + (Math.abs(kx / ky - 1) < .04 ? kx + ',' + ky : k) + ')'; if (ddc) ddPlace() }
+addEventListener('resize', fit); fit();
+
+document.addEventListener('keydown', e => {
+  if (/^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement.tagName) || e.ctrlKey || e.altKey || e.metaKey) return;
+  if (e.code === 'Space'){ e.preventDefault(); dig(); return }
+  const i = KEYS.indexOf(e.key.toLowerCase());
+  if (i >= 0 && e.key.length === 1) hitPad(i);
+  const f = { F1: 'dig', F2: 'filter', F3: 'favs', F4: 'hist', F5: 'setup' }[e.key];
+  if (f){ e.preventDefault(); page(f) }
+});
+</script>
+</body>
+</html>
