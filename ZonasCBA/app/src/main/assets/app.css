@@ -93,3 +93,8 @@ button{font:inherit;color:inherit;cursor:pointer}
   .mapa-wrap{flex:1 1 55%;border-bottom:0;border-right:2px solid #0a0b0d}
   .lista-wrap{flex:1 1 45%}
 }
+
+.avisos{margin-top:10px;font-size:11px;color:var(--mut)}
+.chips{display:flex;gap:6px;margin-top:5px}
+.chip{flex:1;text-align:center;padding:8px 4px;border-radius:7px;border:1px solid var(--linea);
+  background:var(--panel2);color:var(--txt);font-weight:800;letter-spacing:.04em;font-size:10px;text-decoration:none}

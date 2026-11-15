@@ -75,7 +75,7 @@
       "datos": ["Casa 3 ambientes con jardín: USD 150 a 250 mil (Roomix, 2026)"]
     },
     {
-      "id": "arguello-la-calera", "nombre": "Argüello – La Calera", "tipo": "Barrios cerrados · corredor NO",
+      "id": "arguello-la-calera", "slug": "arguello", "nombre": "Argüello – La Calera", "tipo": "Barrios cerrados · corredor NO",
       "lat": -31.329, "lng": -64.244,
       "vender": {"demanda": 7, "liquidez": 6, "valorizacion": 6},
       "comprar": {"entrada": 6, "renta": 4, "potencial": 8},

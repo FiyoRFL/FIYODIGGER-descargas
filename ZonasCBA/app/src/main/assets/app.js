@@ -169,6 +169,16 @@
 
   /* ---------- interfaz ---------- */
   function linkMaps(z) { return 'https://www.google.com/maps/search/?api=1&query=' + z.lat + ',' + z.lng; }
+  function slugPortal(z) { return encodeURIComponent(z.slug || z.id); }
+  function portales(z) {
+    var sl = slugPortal(z);
+    return '<div class="avisos"><span>Viviendas en venta con precio</span>' +
+      '<div class="chips">' +
+      '<a class="chip" target="_blank" href="https://www.zonaprop.com.ar/inmuebles-venta-' + sl + '.html">ZONAPROP</a>' +
+      '<a class="chip" target="_blank" href="https://www.argenprop.com/inmuebles/venta/' + sl + '">ARGENPROP</a>' +
+      '<a class="chip" target="_blank" href="https://inmuebles.mercadolibre.com.ar/venta/cordoba/cordoba/' + sl + '/">MERCADOLIBRE</a>' +
+      '</div></div>';
+  }
   function linkRuta(z) { return 'https://www.google.com/maps/dir/?api=1&destination=' + z.lat + ',' + z.lng; }
 
   function tarjeta(it, i) {
@@ -185,6 +195,7 @@
       '<div class="pts">' + it.p + '</div></div>' +
       '<div class="barra"><i style="width:' + it.p + '%;background:' + color(it.p) + '"></i></div>' +
       '<p class="motivo">' + esc(z['motivo_' + modo] || '') + '</p>' +
+      portales(z) +
       '<div class="det">' + dims + datos +
       '<div class="btns"><a class="btn" target="_blank" href="' + linkMaps(z) + '">GOOGLE MAPS</a>' +
       '<a class="btn sec" target="_blank" href="' + linkRuta(z) + '">CÓMO LLEGAR</a></div></div>' +
