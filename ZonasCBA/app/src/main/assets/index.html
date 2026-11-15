@@ -3,16 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#16181b">
+<meta name="theme-color" content="#0f2a43">
 <title>ZONAS CBA</title>
 <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
 <link rel="stylesheet" href="app.css">
 </head>
 <body>
 <header class="top">
-  <div class="brand">
-    <div class="logo">ZONAS<span>CBA</span></div>
-    <div class="lcd" id="estado">Cargando…</div>
+  <div class="loc">
+    <svg class="pin-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>
+    <div>
+      <b>Córdoba capital</b>
+      <small id="estado">Cargando…</small>
+    </div>
   </div>
   <div class="acciones">
     <button id="btnRefresh" class="ico" aria-label="Actualizar datos">⟳</button>
@@ -20,14 +23,17 @@
   </div>
 </header>
 
-<nav class="tabs" role="tablist">
-  <button class="tab on" id="tabVender" role="tab" data-modo="vender">VENDER</button>
-  <button class="tab" id="tabComprar" role="tab" data-modo="comprar">COMPRAR</button>
+<nav class="seg" role="tablist">
+  <button class="tab on" id="tabVender" role="tab" data-modo="vender">Quiero vender</button>
+  <button class="tab" id="tabComprar" role="tab" data-modo="comprar">Quiero comprar</button>
 </nav>
 
 <main class="cuerpo">
   <section class="mapa-wrap"><div id="map"></div><div class="leyenda" id="leyenda"></div></section>
-  <section class="lista-wrap"><div id="lista" class="lista"></div></section>
+  <section class="lista-wrap">
+    <div class="titulo-lista" id="tituloLista"></div>
+    <div id="lista" class="lista"></div>
+  </section>
 </main>
 
 <div id="toast" class="toast" role="status"></div>
@@ -41,11 +47,11 @@
     </label>
     <p class="ayuda">Sin clave el mapa usa OpenStreetMap, y cada zona abre Google Maps con un toque. Con clave, el mapa es de Google. La clave se guarda solo en este celu. Si la restringís por sitio web, permití <b>https://appassets.androidplatform.net/*</b>.</p>
     <div class="fila">
-      <button id="btnGuardar" class="btn">GUARDAR</button>
-      <button id="btnQuitar" class="btn sec">QUITAR CLAVE</button>
+      <button id="btnGuardar" class="btn">Guardar</button>
+      <button id="btnQuitar" class="btn sec">Quitar clave</button>
     </div>
     <div class="info" id="infoDatos"></div>
-    <button id="btnCerrar" class="btn sec ancho">CERRAR</button>
+    <button id="btnCerrar" class="btn sec ancho">Cerrar</button>
   </div>
 </div>
 

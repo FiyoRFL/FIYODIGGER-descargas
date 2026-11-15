@@ -61,28 +61,33 @@
   }
 
   function color(p) {
-    if (p >= 75) return '#39ff88';
-    if (p >= 62) return '#d6e84a';
-    if (p >= 48) return '#ffb020';
-    return '#8d96a0';
+    if (p >= 75) return '#12a150';
+    if (p >= 65) return '#6aa81f';
+    if (p >= 55) return '#f5a524';
+    return '#8b97a3';
+  }
+  function etiqueta(p) {
+    if (p >= 75) return 'Excelente';
+    if (p >= 65) return 'Muy buena';
+    if (p >= 55) return 'Buena';
+    return 'Media';
+  }
+  function icono(z) {
+    var casa = /casa|cerrado/i.test(z.tipo || '');
+    return casa
+      ? '<svg viewBox="0 0 24 24"><path d="M12 3 2 12h3v8h5v-5h4v5h5v-8h3z"/></svg>'
+      : '<svg viewBox="0 0 24 24"><path d="M4 21V5l9-3v6l7 2v11h-6v-4h-4v4z"/></svg>';
   }
 
   /* ---------- mapa ---------- */
-  var ESTILO_GOOGLE = [
-    { elementType: 'geometry', stylers: [{ color: '#1c1f23' }] },
-    { elementType: 'labels.text.fill', stylers: [{ color: '#8d96a0' }] },
-    { elementType: 'labels.text.stroke', stylers: [{ color: '#131518' }] },
-    { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#2f353c' }] },
-    { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#0e1013' }] },
-    { featureType: 'poi', stylers: [{ visibility: 'off' }] }
-  ];
+  var ESTILO_GOOGLE = [{ featureType: 'poi', stylers: [{ visibility: 'off' }] }];
 
   function mapaLeaflet() {
     var cont = $('map');
     cont.innerHTML = '';
     var m = L.map('map', { zoomControl: false, attributionControl: false }).setView(data.centro, 12);
     L.control.attribution({ prefix: false, position: 'bottomright' }).addTo(m);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
       maxZoom: 19, subdomains: 'abcd', attribution: '© OpenStreetMap © CARTO'
     }).addTo(m);
     L.control.zoom({ position: 'topright' }).addTo(m);
@@ -93,8 +98,8 @@
         items.forEach(function (it) {
           var ic = L.divIcon({
             className: '',
-            html: '<div class="pin' + (it.z.id === selId ? ' sel' : '') + '" style="background:' + color(it.p) + '">' + it.p + '</div>',
-            iconSize: [30, 30], iconAnchor: [15, 15]
+            html: '<div class="pin' + (it.z.id === selId ? ' sel' : '') + '" style="--c:' + color(it.p) + '">' + it.p + '</div>',
+            iconSize: [0, 0], iconAnchor: [0, 0]
           });
           L.marker([it.z.lat, it.z.lng], { icon: ic }).addTo(capa)
             .on('click', function () { seleccionar(it.z.id); });
@@ -122,9 +127,9 @@
             map: m, position: { lat: it.z.lat, lng: it.z.lng },
             icon: {
               path: google.maps.SymbolPath.CIRCLE, scale: it.z.id === selId ? 20 : 16,
-              fillColor: color(it.p), fillOpacity: 1, strokeColor: '#000', strokeWeight: 2
+              fillColor: it.z.id === selId ? '#0f2a43' : '#ffffff', fillOpacity: 1, strokeColor: color(it.p), strokeWeight: 3
             },
-            label: { text: String(it.p), color: '#000', fontWeight: '800', fontSize: '12px' }
+            label: { text: String(it.p), color: it.z.id === selId ? '#ffffff' : color(it.p), fontWeight: '800', fontSize: '12px' }
           });
           k.addListener('click', function () { seleccionar(it.z.id); });
           return k;
@@ -169,36 +174,44 @@
 
   /* ---------- interfaz ---------- */
   function linkMaps(z) { return 'https://www.google.com/maps/search/?api=1&query=' + z.lat + ',' + z.lng; }
-  function slugPortal(z) { return encodeURIComponent(z.slug || z.id); }
+  function gq(z, sitio) {
+    return 'https://www.google.com/search?q=' +
+      encodeURIComponent('propiedades en venta ' + (z.busqueda || z.nombre) + ' Córdoba site:' + sitio);
+  }
   function portales(z) {
-    var sl = slugPortal(z);
-    return '<div class="avisos"><span>Viviendas en venta con precio</span>' +
-      '<div class="chips">' +
-      '<a class="chip" target="_blank" href="https://www.zonaprop.com.ar/inmuebles-venta-' + sl + '.html">ZONAPROP</a>' +
-      '<a class="chip" target="_blank" href="https://www.argenprop.com/inmuebles/venta/' + sl + '">ARGENPROP</a>' +
-      '<a class="chip" target="_blank" href="https://inmuebles.mercadolibre.com.ar/venta/cordoba/cordoba/' + sl + '/">MERCADOLIBRE</a>' +
+    var p = z.portales || {};
+    var zp = p.zonaprop ? 'https://www.zonaprop.com.ar/' + p.zonaprop : gq(z, 'zonaprop.com.ar');
+    var ap = p.argenprop ? 'https://www.argenprop.com/' + p.argenprop : gq(z, 'argenprop.com');
+    var ml = p.mercadolibre ? 'https://inmuebles.mercadolibre.com.ar/venta/cordoba/cordoba/' + encodeURIComponent(p.mercadolibre) + '/' : gq(z, 'inmuebles.mercadolibre.com.ar');
+    return '<div class="avisos"><span>Ver viviendas en venta con precio</span><div class="chips">' +
+      '<a class="chip zp" target="_blank" href="' + esc(zp) + '">Zonaprop</a>' +
+      '<a class="chip ap" target="_blank" href="' + esc(ap) + '">Argenprop</a>' +
+      '<a class="chip ml" target="_blank" href="' + esc(ml) + '">MercadoLibre</a>' +
       '</div></div>';
   }
+
   function linkRuta(z) { return 'https://www.google.com/maps/dir/?api=1&destination=' + z.lat + ',' + z.lng; }
 
   function tarjeta(it, i) {
-    var z = it.z, abierta = sel === z.id;
+    var z = it.z, abierta = sel === z.id, c = color(it.p);
     var dims = data.dimensiones[modo].map(function (d) {
       var v = z[modo][d.k];
       return '<div class="dim"><span>' + esc(d.t) + '</span><em>' + v + '/10</em><div class="b"><i style="width:' + (v * 10) + '%"></i></div></div>';
     }).join('');
     var datos = (z.datos && z.datos.length)
       ? '<ul class="datos">' + z.datos.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>' : '';
+    var precio = z.precio ? '<div class="precio"><b>Precios de referencia:</b> ' + esc(z.precio) + '</div>' : '';
     return '<article class="card' + (abierta ? ' sel' : '') + '" data-id="' + esc(z.id) + '">' +
-      '<div class="cab"><div class="rank">' + (i + 1) + '</div>' +
+      '<div class="cab"><div class="foto" style="background:linear-gradient(135deg,' + c + ',#0f2a43)">' + icono(z) + '<em>' + (i + 1) + '</em></div>' +
       '<div class="nom"><b>' + esc(z.nombre) + '</b><small>' + esc(z.tipo || '') + '</small></div>' +
-      '<div class="pts">' + it.p + '</div></div>' +
-      '<div class="barra"><i style="width:' + it.p + '%;background:' + color(it.p) + '"></i></div>' +
+      '<div class="pts" style="color:' + c + '"><b>' + it.p + '</b><span>' + etiqueta(it.p) + '</span></div></div>' +
+      precio +
       '<p class="motivo">' + esc(z['motivo_' + modo] || '') + '</p>' +
       portales(z) +
+      '<div class="vermas">' + (abierta ? 'Ver menos ▲' : 'Ver detalle ▼') + '</div>' +
       '<div class="det">' + dims + datos +
-      '<div class="btns"><a class="btn" target="_blank" href="' + linkMaps(z) + '">GOOGLE MAPS</a>' +
-      '<a class="btn sec" target="_blank" href="' + linkRuta(z) + '">CÓMO LLEGAR</a></div></div>' +
+      '<div class="btns"><a class="btn" target="_blank" href="' + linkMaps(z) + '">Abrir en Google Maps</a>' +
+      '<a class="btn sec" target="_blank" href="' + linkRuta(z) + '">Cómo llegar</a></div></div>' +
       '</article>';
   }
 
@@ -208,13 +221,16 @@
     $('tabVender').classList.toggle('on', modo === 'vender');
     $('tabComprar').classList.toggle('on', modo === 'comprar');
     $('leyenda').innerHTML =
-      '<span><i style="background:#39ff88"></i>Mejor</span><span><i style="background:#ffb020"></i>Medio</span><span><i style="background:#8d96a0"></i>Menos</span>';
+      '<span><i style="background:#12a150"></i>Excelente</span><span><i style="background:#6aa81f"></i>Muy buena</span><span><i style="background:#f5a524"></i>Buena</span>';
+    $('tituloLista').innerHTML = modo === 'vender'
+      ? '<b>Dónde conviene vender</b>Zonas ordenadas por demanda, rapidez de venta y valorización'
+      : '<b>Dónde conviene comprar</b>Zonas ordenadas por precio de entrada, renta y crecimiento';
     var fuentes = (data.fuentes || []).map(function (f) {
       return '<a target="_blank" href="' + esc(urlSegura(f.u)) + '">' + esc(f.t) + '</a>';
     }).join('');
     $('lista').innerHTML = items.map(tarjeta).join('') +
       '<div class="aviso">' + esc(data.nota || '') + '</div>' +
-      (fuentes ? '<div class="fuentes">Fuentes' + fuentes + '</div>' : '');
+      (fuentes ? '<div class="fuentes"><b>Fuentes</b>' + fuentes + '</div>' : '');
     if (mapa) {
       mapa.set(items, sel);
       if (primerFit) { mapa.fit(items); primerFit = false; }
@@ -241,7 +257,7 @@
       var d = new Date(ultimoSync);
       marca = ' ✓ ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
     }
-    $('estado').textContent = 'DATOS ' + corta + marca;
+    $('estado').textContent = 'Datos al ' + corta + marca;
     $('infoDatos').textContent =
       'Datos del ' + fechaTxt(data.actualizado) + '\n' +
       'Zonas: ' + data.zonas.length + '\n' +
@@ -254,6 +270,7 @@
   function mejorDe(a, b) {
     if (!a) return b;
     if (!b) return a;
+    if ((b.version || 0) !== (a.version || 0)) return (b.version || 0) > (a.version || 0) ? b : a;
     return (b.actualizado || '') > (a.actualizado || '') ? b : a;
   }
 
@@ -272,7 +289,7 @@
         if (!validar(d)) throw new Error('formato');
         ultimoSync = Date.now();
         ls('ultimoSync', String(ultimoSync));
-        var cambio = !data || ((d.actualizado || '') >= (data.actualizado || '') && JSON.stringify(d) !== JSON.stringify(data));
+        var cambio = !data || mejorDe(data, d) === d && JSON.stringify(d) !== JSON.stringify(data);
         if (cambio) {
           data = d;
           ls('cache', JSON.stringify(d));
@@ -350,7 +367,7 @@
         pedirRemoto(false);
       })
       .catch(function () {
-        $('estado').textContent = 'ERROR DE DATOS';
+        $('estado').textContent = 'Error de datos';
         toast('No pude leer los datos de la app.');
       });
   }

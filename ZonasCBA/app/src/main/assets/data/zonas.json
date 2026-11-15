@@ -1,123 +1,330 @@
 {
-  "version": 1,
+  "version": 2,
   "actualizado": "2026-11-15",
   "ciudad": "Córdoba capital",
   "nota": "Puntajes de referencia armados con fuentes públicas. No es asesoramiento financiero ni una tasación.",
-  "centro": [-31.39, -64.2],
+  "centro": [
+    -31.39,
+    -64.2
+  ],
   "dimensiones": {
     "vender": [
-      {"k": "demanda", "t": "Demanda"},
-      {"k": "liquidez", "t": "Liquidez (qué tan rápido se vende)"},
-      {"k": "valorizacion", "t": "Valorización histórica"}
+      {
+        "k": "demanda",
+        "t": "Demanda"
+      },
+      {
+        "k": "liquidez",
+        "t": "Liquidez (qué tan rápido se vende)"
+      },
+      {
+        "k": "valorizacion",
+        "t": "Valorización histórica"
+      }
     ],
     "comprar": [
-      {"k": "entrada", "t": "Precio de entrada (más alto = más barato)"},
-      {"k": "renta", "t": "Rentabilidad por alquiler"},
-      {"k": "potencial", "t": "Potencial de crecimiento"}
+      {
+        "k": "entrada",
+        "t": "Precio de entrada (más alto = más barato)"
+      },
+      {
+        "k": "renta",
+        "t": "Rentabilidad por alquiler"
+      },
+      {
+        "k": "potencial",
+        "t": "Potencial de crecimiento"
+      }
     ]
   },
   "pesos": {
-    "vender": {"demanda": 0.4, "liquidez": 0.35, "valorizacion": 0.25},
-    "comprar": {"entrada": 0.35, "renta": 0.35, "potencial": 0.3}
+    "vender": {
+      "demanda": 0.4,
+      "liquidez": 0.35,
+      "valorizacion": 0.25
+    },
+    "comprar": {
+      "entrada": 0.35,
+      "renta": 0.35,
+      "potencial": 0.3
+    }
   },
   "fuentes": [
-    {"t": "Roomix · Comprar en Córdoba, guía 2026", "u": "https://roomix.ai/blog/comprar-en-cordoba-guia-2026"},
-    {"t": "Roomix · Mercado inmobiliario de Córdoba 2026", "u": "https://roomix.ai/blog/cordoba-inmobiliaria-mercado-crece-2026"},
-    {"t": "Roomix · Cuánto cuesta una casa en Córdoba 2026", "u": "https://roomix.ai/blog/cuanto-cuesta-comprar-casa-en-cordoba-2026"},
-    {"t": "Perfil · Porteños seducidos por los inmuebles cordobeses", "u": "https://www.perfil.com/noticias/cordoba/portenos-seducidos-por-los-inmuebles-cordobeses-el-metro-cuadrado-vale-casi-la-mitad-que-en-buenos-aires.phtml"},
-    {"t": "Mercado · Sigue el auge inmobiliario, a ritmo más lento", "u": "https://mercado.com.ar/revista/numero-1070/sigue-el-auge-inmobiliario-pero-ahora-a-ritmo-mas-lento/"},
-    {"t": "Zonaprop · Index Córdoba, marzo 2026", "u": "https://www.zonaprop.com.ar/blog/wp-content/uploads/2026/04/INDEX_CBA_REPORTE_2026-03.pdf"}
+    {
+      "t": "Roomix · Comprar en Córdoba, guía 2026",
+      "u": "https://roomix.ai/blog/comprar-en-cordoba-guia-2026"
+    },
+    {
+      "t": "Roomix · Mercado inmobiliario de Córdoba 2026",
+      "u": "https://roomix.ai/blog/cordoba-inmobiliaria-mercado-crece-2026"
+    },
+    {
+      "t": "Roomix · Cuánto cuesta una casa en Córdoba 2026",
+      "u": "https://roomix.ai/blog/cuanto-cuesta-comprar-casa-en-cordoba-2026"
+    },
+    {
+      "t": "Perfil · Porteños seducidos por los inmuebles cordobeses",
+      "u": "https://www.perfil.com/noticias/cordoba/portenos-seducidos-por-los-inmuebles-cordobeses-el-metro-cuadrado-vale-casi-la-mitad-que-en-buenos-aires.phtml"
+    },
+    {
+      "t": "Mercado · Sigue el auge inmobiliario, a ritmo más lento",
+      "u": "https://mercado.com.ar/revista/numero-1070/sigue-el-auge-inmobiliario-pero-ahora-a-ritmo-mas-lento/"
+    },
+    {
+      "t": "Zonaprop · Index Córdoba, marzo 2026",
+      "u": "https://www.zonaprop.com.ar/blog/wp-content/uploads/2026/04/INDEX_CBA_REPORTE_2026-03.pdf"
+    }
   ],
   "zonas": [
     {
-      "id": "nueva-cordoba", "nombre": "Nueva Córdoba", "tipo": "Estudiantil · torres",
-      "lat": -31.431, "lng": -64.1865,
-      "vender": {"demanda": 9, "liquidez": 7, "valorizacion": 8},
-      "comprar": {"entrada": 3, "renta": 6, "potencial": 5},
+      "id": "nueva-cordoba",
+      "nombre": "Nueva Córdoba",
+      "tipo": "Estudiantil · torres",
+      "lat": -31.431,
+      "lng": -64.1865,
+      "vender": {
+        "demanda": 9,
+        "liquidez": 7,
+        "valorizacion": 8
+      },
+      "comprar": {
+        "entrada": 3,
+        "renta": 6,
+        "potencial": 5
+      },
       "motivo_vender": "El barrio más demandado de la ciudad, con alquiler estudiantil constante. Ojo: hay muchísima obra nueva compitiendo con los usados.",
       "motivo_comprar": "Es la apuesta más segura para renta y valorización, pero el precio de entrada es alto y el rendimiento porcentual es menor que en otros barrios.",
-      "datos": ["2 ambientes: USD 60 a 100 mil (Roomix, 2026)", "Unas 140 obras en ejecución en el barrio (Mercado)"]
+      "datos": [
+        "Zonaprop muestra más de 3.000 departamentos en venta en el barrio (2026)",
+        "2 ambientes: USD 60 a 100 mil (Roomix, 2026)",
+        "Unas 140 obras en ejecución en el barrio (Mercado)"
+      ],
+      "portales": {
+        "zonaprop": "departamentos-venta-nueva-cordoba.html",
+        "argenprop": "departamentos/venta/nueva-cordoba",
+        "mercadolibre": "nueva-cordoba"
+      },
+      "precio": "Departamentos de USD 75 mil a 370 mil en avisos de Zonaprop (2026)"
     },
     {
-      "id": "cerro-de-las-rosas", "nombre": "Cerro de las Rosas", "tipo": "Premium · casas",
-      "lat": -31.37, "lng": -64.222,
-      "vender": {"demanda": 8, "liquidez": 6, "valorizacion": 8},
-      "comprar": {"entrada": 2, "renta": 4, "potencial": 5},
+      "id": "cerro-de-las-rosas",
+      "nombre": "Cerro de las Rosas",
+      "tipo": "Premium · casas",
+      "lat": -31.37,
+      "lng": -64.222,
+      "vender": {
+        "demanda": 8,
+        "liquidez": 6,
+        "valorizacion": 8
+      },
+      "comprar": {
+        "entrada": 2,
+        "renta": 4,
+        "potencial": 5
+      },
       "motivo_vender": "Barrio tradicional de clase alta con demanda firme. Tickets altos: se vende bien, pero el comprador tarda más en decidir.",
       "motivo_comprar": "Preserva capital y valoriza bien, pero es de los más caros y rinde poco por alquiler.",
-      "datos": ["Casa premium de 5+ ambientes: USD 350 a 700 mil (Roomix, 2026)", "m² construido: USD 1.500 a 2.500, el más alto de la ciudad (Roomix, 2026)"]
+      "datos": [
+        "Casa premium de 5+ ambientes: USD 350 a 700 mil (Roomix, 2026)",
+        "m² construido: USD 1.500 a 2.500, el más alto de la ciudad (Roomix, 2026)"
+      ],
+      "portales": {
+        "mercadolibre": "cerro-de-las-rosas"
+      },
+      "precio": "Casas de unos USD 115 mil a 550 mil en una muestra de avisos de MercadoLibre (2026)"
     },
     {
-      "id": "villa-belgrano", "nombre": "Villa Belgrano", "tipo": "Premium · familias",
-      "lat": -31.357, "lng": -64.233,
-      "vender": {"demanda": 7, "liquidez": 6, "valorizacion": 7},
-      "comprar": {"entrada": 3, "renta": 4, "potencial": 6},
+      "id": "villa-belgrano",
+      "nombre": "Villa Belgrano",
+      "tipo": "Premium · familias",
+      "lat": -31.357,
+      "lng": -64.233,
+      "vender": {
+        "demanda": 7,
+        "liquidez": 6,
+        "valorizacion": 7
+      },
+      "comprar": {
+        "entrada": 3,
+        "renta": 4,
+        "potencial": 6
+      },
       "motivo_vender": "Zona premium para familias, con buena demanda y entornos tranquilos.",
       "motivo_comprar": "Precios premium y renta moderada. Sirve para vivienda propia o para guardar valor a largo plazo.",
-      "datos": ["Figura entre los barrios top junto a Nueva Córdoba y Cerro de las Rosas (Roomix, 2026)"]
+      "datos": [
+        "Figura entre los barrios top junto a Nueva Córdoba y Cerro de las Rosas (Roomix, 2026)"
+      ],
+      "portales": {
+        "mercadolibre": "villa-belgrano"
+      }
     },
     {
-      "id": "valle-escondido", "nombre": "Valle Escondido", "tipo": "Premium · corredor noroeste",
-      "lat": -31.348, "lng": -64.248,
-      "vender": {"demanda": 7, "liquidez": 6, "valorizacion": 8},
-      "comprar": {"entrada": 3, "renta": 3, "potencial": 7},
+      "id": "valle-escondido",
+      "nombre": "Valle Escondido",
+      "tipo": "Premium · corredor noroeste",
+      "lat": -31.348,
+      "lng": -64.248,
+      "vender": {
+        "demanda": 7,
+        "liquidez": 6,
+        "valorizacion": 8
+      },
+      "comprar": {
+        "entrada": 3,
+        "renta": 3,
+        "potencial": 7
+      },
       "motivo_vender": "Es de las zonas con mejor historial de valorización del corredor noroeste.",
       "motivo_comprar": "Apuesta de valorización más que de renta: se compra para que el activo suba, no para alquilar.",
-      "datos": ["Mayor track record de valorización de capital junto con el corredor noroeste (Roomix, 2026)"]
+      "datos": [
+        "Mayor track record de valorización de capital junto con el corredor noroeste (Roomix, 2026)"
+      ],
+      "portales": {
+        "mercadolibre": "valle-escondido"
+      }
     },
     {
-      "id": "urca", "nombre": "Urca", "tipo": "Residencial alto · casas",
-      "lat": -31.383, "lng": -64.229,
-      "vender": {"demanda": 7, "liquidez": 7, "valorizacion": 6},
-      "comprar": {"entrada": 4, "renta": 4, "potencial": 5},
+      "id": "urca",
+      "nombre": "Urca",
+      "tipo": "Residencial alto · casas",
+      "lat": -31.383,
+      "lng": -64.229,
+      "vender": {
+        "demanda": 7,
+        "liquidez": 7,
+        "valorizacion": 6
+      },
+      "comprar": {
+        "entrada": 4,
+        "renta": 4,
+        "potencial": 5
+      },
       "motivo_vender": "Barrio residencial de nivel alto, pegado a Cerro de las Rosas, con salida más fluida por ser algo más accesible.",
       "motivo_comprar": "Alternativa más barata que Cerro de las Rosas con perfil parecido.",
-      "datos": ["Casa 3 ambientes con jardín: USD 150 a 250 mil (Roomix, 2026)"]
+      "datos": [
+        "Casa 3 ambientes con jardín: USD 150 a 250 mil (Roomix, 2026)"
+      ],
+      "precio": "Casa 3 ambientes con jardín: USD 150 a 250 mil (Roomix, 2026)"
     },
     {
-      "id": "arguello-la-calera", "slug": "arguello", "nombre": "Argüello – La Calera", "tipo": "Barrios cerrados · corredor NO",
-      "lat": -31.329, "lng": -64.244,
-      "vender": {"demanda": 7, "liquidez": 6, "valorizacion": 6},
-      "comprar": {"entrada": 6, "renta": 4, "potencial": 8},
+      "id": "arguello-la-calera",
+      "nombre": "Argüello – La Calera",
+      "tipo": "Barrios cerrados · corredor NO",
+      "lat": -31.329,
+      "lng": -64.244,
+      "vender": {
+        "demanda": 7,
+        "liquidez": 6,
+        "valorizacion": 6
+      },
+      "comprar": {
+        "entrada": 6,
+        "renta": 4,
+        "potencial": 8
+      },
       "motivo_vender": "Muy buscado por familias que quieren casa con jardín en barrio cerrado.",
       "motivo_comprar": "Es la zona con más proyección: casas más amplias a menor precio que el centro y desarrollos nuevos.",
-      "datos": ["Casa 3 ambientes con jardín en barrio cerrado: USD 120 a 200 mil (Roomix, 2026)", "Ojo con barrios cerrados sin escritura ni servicios propios (La Voz / Infonegocios)"]
+      "datos": [
+        "Casa 3 ambientes con jardín en barrio cerrado: USD 120 a 200 mil (Roomix, 2026)",
+        "Ojo con barrios cerrados sin escritura ni servicios propios (La Voz / Infonegocios)"
+      ],
+      "busqueda": "Argüello",
+      "precio": "Casa 3 ambientes en barrio cerrado: USD 120 a 200 mil (Roomix, 2026)"
     },
     {
-      "id": "general-paz", "nombre": "General Paz", "tipo": "Rentista · edificios",
-      "lat": -31.4125, "lng": -64.167,
-      "vender": {"demanda": 7, "liquidez": 7, "valorizacion": 6},
-      "comprar": {"entrada": 7, "renta": 8, "potencial": 7},
+      "id": "general-paz",
+      "nombre": "General Paz",
+      "tipo": "Rentista · edificios",
+      "lat": -31.4125,
+      "lng": -64.167,
+      "vender": {
+        "demanda": 7,
+        "liquidez": 7,
+        "valorizacion": 6
+      },
+      "comprar": {
+        "entrada": 7,
+        "renta": 8,
+        "potencial": 7
+      },
       "motivo_vender": "Barrio consolidado, con mucha obra nueva y demanda de inversores.",
       "motivo_comprar": "Es de los que lideran el rendimiento por alquiler, con una de las mejores relaciones precio-rendimiento.",
-      "datos": ["Lidera el ROI de alquiler junto con Nueva Córdoba (Roomix, 2026)", "Unas 70 obras en ejecución (Mercado)"]
+      "datos": [
+        "Lidera el ROI de alquiler junto con Nueva Córdoba (Roomix, 2026)",
+        "Unas 70 obras en ejecución (Mercado)"
+      ]
     },
     {
-      "id": "cofico", "nombre": "Cofico", "tipo": "Rentista · edificios",
-      "lat": -31.4175, "lng": -64.174,
-      "vender": {"demanda": 7, "liquidez": 7, "valorizacion": 6},
-      "comprar": {"entrada": 6, "renta": 7, "potencial": 6},
+      "id": "cofico",
+      "nombre": "Cofico",
+      "tipo": "Rentista · edificios",
+      "lat": -31.4175,
+      "lng": -64.174,
+      "vender": {
+        "demanda": 7,
+        "liquidez": 7,
+        "valorizacion": 6
+      },
+      "comprar": {
+        "entrada": 6,
+        "renta": 7,
+        "potencial": 6
+      },
       "motivo_vender": "Barrio muy pedido por inversores y jóvenes, con salida ágil.",
       "motivo_comprar": "Zona caliente para inversión en departamentos, con precio intermedio y buen alquiler.",
-      "datos": ["Entre las zonas calientes de inversión en departamentos (Perfil)"]
+      "datos": [
+        "Entre las zonas calientes de inversión en departamentos (Perfil)"
+      ],
+      "portales": {
+        "mercadolibre": "cofico"
+      }
     },
     {
-      "id": "alberdi", "nombre": "Alberdi", "tipo": "Rentista · entrada barata",
-      "lat": -31.423, "lng": -64.203,
-      "vender": {"demanda": 6, "liquidez": 6, "valorizacion": 5},
-      "comprar": {"entrada": 9, "renta": 8, "potencial": 6},
+      "id": "alberdi",
+      "nombre": "Alberdi",
+      "tipo": "Rentista · entrada barata",
+      "lat": -31.423,
+      "lng": -64.203,
+      "vender": {
+        "demanda": 6,
+        "liquidez": 6,
+        "valorizacion": 5
+      },
+      "comprar": {
+        "entrada": 9,
+        "renta": 8,
+        "potencial": 6
+      },
       "motivo_vender": "Demanda pareja y precios bajos, así que el margen para vender caro es menor.",
       "motivo_comprar": "Es el que mejor ecuación precio-rendimiento ofrece: entrada barata y renta alta.",
-      "datos": ["Mejor ecuación precio-rendimiento junto con General Paz (Roomix, 2026)"]
+      "datos": [
+        "Mejor ecuación precio-rendimiento junto con General Paz (Roomix, 2026)"
+      ]
     },
     {
-      "id": "alta-cordoba", "nombre": "Alta Córdoba", "tipo": "Emergente",
-      "lat": -31.398, "lng": -64.177,
-      "vender": {"demanda": 6, "liquidez": 6, "valorizacion": 6},
-      "comprar": {"entrada": 8, "renta": 7, "potencial": 8},
+      "id": "alta-cordoba",
+      "nombre": "Alta Córdoba",
+      "tipo": "Emergente",
+      "lat": -31.398,
+      "lng": -64.177,
+      "vender": {
+        "demanda": 6,
+        "liquidez": 6,
+        "valorizacion": 6
+      },
+      "comprar": {
+        "entrada": 8,
+        "renta": 7,
+        "potencial": 8
+      },
       "motivo_vender": "Demanda en crecimiento, pero todavía por debajo de los barrios consolidados.",
       "motivo_comprar": "La apuesta en crecimiento: entrada baja y margen para valorizar a mediano plazo.",
-      "datos": ["Señalado como la apuesta en crecimiento (Roomix, 2026)"]
+      "datos": [
+        "Señalado como la apuesta en crecimiento (Roomix, 2026)"
+      ],
+      "portales": {
+        "mercadolibre": "alta-cordoba"
+      }
     }
   ]
 }
