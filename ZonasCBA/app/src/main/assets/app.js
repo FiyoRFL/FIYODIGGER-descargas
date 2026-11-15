@@ -233,7 +233,7 @@
       '<div class="pts" style="color:' + c + '"><b>' + it.p + '</b><span>' + etiqueta(it.p) + '</span></div></div>' +
       precio +
       '<p class="motivo">' + esc(z['motivo_' + modo] || '') + '</p>' +
-      '<button class="btn-props" data-props="' + esc(z.id) + '">🏠 Ver propiedades en venta en el mapa</button>' +
+      (hayScraper() ? '<button class="btn-props" data-props="' + esc(z.id) + '">🏠 Ver propiedades en venta en el mapa</button>' : '') +
       portales(z) +
       '<div class="vermas">' + (abierta ? 'Ver menos ▲' : 'Ver detalle ▼') + '</div>' +
       '<div class="det">' + dims + datos +

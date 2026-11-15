@@ -1,0 +1,47 @@
+name: Publicar ZONAS CBA web (iPhone)
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'ZonasCBA/**'
+      - '.github/workflows/pages-zonascba.yml'
+  schedule:
+    - cron: '23 * * * *'   # cada hora: si una publicación de FIYODIGGER pisa gh-pages, la vuelve a poner
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pages-zonascba
+  cancel-in-progress: false
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          path: src
+
+      - name: Checkout gh-pages
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: site
+
+      - name: Armar la web
+        run: node src/ZonasCBA/web/build.js src/ZonasCBA/app/src/main/assets src/ZonasCBA/web /tmp/zonas
+
+      - name: Copiar a gh-pages/zonas y subir si cambió
+        run: |
+          cd site
+          rm -rf zonas && cp -r /tmp/zonas zonas
+          git add -A zonas
+          if git diff --cached --quiet; then echo "Sin cambios"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git commit -m "ZONAS CBA web"
+          git push origin gh-pages
