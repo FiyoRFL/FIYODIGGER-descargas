@@ -99,7 +99,21 @@
     }).addTo(m);
     L.control.zoom({ position: 'topright' }).addTo(m);
     var capa = L.layerGroup().addTo(m);
+    var capaProps = L.layerGroup().addTo(m);
     return {
+      setProps: function (items) {
+        capaProps.clearLayers();
+        items.forEach(function (it) {
+          var ic = L.divIcon({
+            className: '',
+            html: '<div class="ppin' + (it.aprox ? ' aprox' : '') + '">' + esc(precioCorto(it)) + '</div>',
+            iconSize: [0, 0], iconAnchor: [0, 0]
+          });
+          L.marker([it.lat, it.lng], { icon: ic, zIndexOffset: 1000 }).addTo(capaProps)
+            .on('click', function () { fichaProp(it); });
+        });
+      },
+      clearProps: function () { capaProps.clearLayers(); },
       set: function (items, selId) {
         capa.clearLayers();
         items.forEach(function (it) {
@@ -125,8 +139,21 @@
       center: { lat: data.centro[0], lng: data.centro[1] }, zoom: 12,
       disableDefaultUI: true, zoomControl: true, gestureHandling: 'greedy', styles: ESTILO_GOOGLE
     });
-    var marcas = [];
+    var marcas = [], mprops = [];
     return {
+      setProps: function (items) {
+        mprops.forEach(function (k) { k.setMap(null); });
+        mprops = items.map(function (it) {
+          var k = new google.maps.Marker({
+            map: m, position: { lat: it.lat, lng: it.lng }, zIndex: 1000,
+            icon: { path: google.maps.SymbolPath.CIRCLE, scale: 0 },
+            label: { text: precioCorto(it), color: '#ffffff', fontWeight: '700', fontSize: '11px', className: 'gpin' + (it.aprox ? ' aprox' : '') }
+          });
+          k.addListener('click', function () { fichaProp(it); });
+          return k;
+        });
+      },
+      clearProps: function () { mprops.forEach(function (k) { k.setMap(null); }); mprops = []; },
       set: function (items, selId) {
         marcas.forEach(function (k) { k.setMap(null); });
         marcas = items.map(function (it) {
@@ -206,6 +233,7 @@
       '<div class="pts" style="color:' + c + '"><b>' + it.p + '</b><span>' + etiqueta(it.p) + '</span></div></div>' +
       precio +
       '<p class="motivo">' + esc(z['motivo_' + modo] || '') + '</p>' +
+      '<button class="btn-props" data-props="' + esc(z.id) + '">🏠 Ver propiedades en venta en el mapa</button>' +
       portales(z) +
       '<div class="vermas">' + (abierta ? 'Ver menos ▲' : 'Ver detalle ▼') + '</div>' +
       '<div class="det">' + dims + datos +
@@ -232,6 +260,7 @@
       (fuentes ? '<div class="fuentes"><b>Fuentes</b>' + fuentes + '</div>' : '');
     if (mapa) {
       mapa.set(items, sel);
+      if (props.zona) mapa.setProps(props.items);
       if (primerFit) { mapa.fit(items); primerFit = false; }
     }
     estado();
@@ -312,11 +341,183 @@
     if (Date.now() - ultimoSync > HORAS_ENTRE_SYNC * 3600 * 1000) pedirRemoto(false);
   }
 
+
+  /* ---------- propiedades en el mapa (avisos de MercadoLibre) ---------- */
+  var MAX_PAG = 3;
+  var props = { zona: null, items: [], cola: [], vistos: {}, paginas: 0, ubicados: 0 };
+
+  function zonaPorId(id) { return data.zonas.filter(function (x) { return x.id === id; })[0]; }
+  function hayScraper() { return !!(window.AndroidScraper && window.AndroidScraper.cargar); }
+  function mlUrl(z) {
+    var s = (z.portales && z.portales.mercadolibre) || z.slug || z.id;
+    return 'https://inmuebles.mercadolibre.com.ar/venta/cordoba/cordoba/' + encodeURIComponent(s) + '/';
+  }
+  function precioCorto(it) {
+    var p = it.p, t;
+    if (p >= 1e6) t = (Math.round(p / 1e5) / 10) + 'M';
+    else if (p >= 1e3) t = Math.round(p / 1e3) + 'k';
+    else t = String(p);
+    return (it.m === 'USD' ? 'US$' : '$') + t;
+  }
+  function precioLargo(it) {
+    return (it.m === 'USD' ? 'US$ ' : '$ ') + String(it.p).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  }
+  function hash(str) {
+    var h = 0;
+    for (var i = 0; i < str.length; i++) { h = ((h << 5) - h + str.charCodeAt(i)) | 0; }
+    return Math.abs(h);
+  }
+  function claveGeo(it) { return 'geo:' + (it.loc || '').toLowerCase(); }
+
+  function verPropiedades(id) {
+    var z = zonaPorId(id);
+    if (!z) return;
+    if (!hayScraper()) { toast('Esto funciona dentro de la app Android.'); return; }
+    props = { zona: id, items: [], cola: [], vistos: {}, paginas: 0, ubicados: 0, cargando: true, msg: '' };
+    var P = props;
+    if (mapa) { mapa.clearProps(); mapa.focus(z); }
+    barraProps();
+    window.AndroidScraper.cargar(mlUrl(z));
+    setTimeout(function () {
+      if (P === props && P.cargando && !P.items.length && !P.captcha) {
+        P.cargando = false; P.msg = 'MercadoLibre no respondió. Tocá la zona y probá de nuevo.'; barraProps();
+      }
+    }, 30000);
+  }
+
+  function cerrarProps() {
+    props = { zona: null, items: [], cola: [], vistos: {}, paginas: 0, ubicados: 0 };
+    if (mapa) mapa.clearProps();
+    $('ficha').hidden = true;
+    barraProps();
+  }
+
+  window.onScraperCerrado = function () {
+    if (props.zona && props.captcha) { props.msg = 'Falta la verificación de MercadoLibre.'; barraProps(); }
+  };
+
+  window.onAvisos = function (raw) {
+    var P = props;
+    if (!P.zona) return;
+    var r = null;
+    try { r = JSON.parse(raw); } catch (e) { r = null; }
+    if (!r) { P.cargando = false; P.msg = 'No pude leer los avisos.'; barraProps(); return; }
+    if (r.captcha) { P.captcha = true; barraProps(); return; }
+    if (P.captcha) { P.captcha = false; window.AndroidScraper.ocultar(); }
+    var z = zonaPorId(P.zona);
+    (r.items || []).forEach(function (it) {
+      if (!it || !it.u || P.vistos[it.u] || !(it.p > 0)) return;
+      P.vistos[it.u] = 1;
+      P.items.push(it);
+      ubicar(it, z, P);
+    });
+    P.paginas++;
+    if (r.next && P.paginas < MAX_PAG && /^https:\/\/[^\/]*mercadolibre\.com\.ar\//.test(r.next) && (r.items || []).length) {
+      setTimeout(function () { if (P === props) window.AndroidScraper.cargar(r.next); }, 1200);
+    } else {
+      P.cargando = false;
+      if (!P.items.length) P.msg = 'No encontré avisos con precio en esta zona.';
+    }
+    dibujarProps();
+    barraProps();
+    procesarCola(P);
+  };
+
+  function ubicar(it, z, P) {
+    var c = it.loc ? ls(claveGeo(it)) : null;
+    if (c) {
+      try {
+        var g = JSON.parse(c);
+        if (g && num(g[0]) && num(g[1])) { it.lat = g[0]; it.lng = g[1]; it.aprox = !!g[2]; P.ubicados++; return; }
+      } catch (e) { /* sin caché */ }
+    }
+    var h = hash(it.u);
+    it.lat = z.lat + ((h % 1000) / 1000 - 0.5) * 0.012;
+    it.lng = z.lng + ((Math.floor(h / 1000) % 1000) / 1000 - 0.5) * 0.012;
+    it.aprox = true;
+    if (it.loc) P.cola.push(it); else P.ubicados++;
+  }
+
+  function procesarCola(P) {
+    if (P !== props || P.geoActivo) return;
+    var it = P.cola.shift();
+    if (!it) { barraProps(); return; }
+    P.geoActivo = true;
+    var q = it.loc.replace(/\s+/g, ' ') + ', Córdoba, Argentina';
+    fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=ar&viewbox=-64.40,-31.25,-64.00,-31.55&bounded=1&q=' + encodeURIComponent(q))
+      .then(function (r) { return r.ok ? r.json() : []; })
+      .then(function (a) {
+        var x = (a && a[0]) ? a[0] : null;
+        if (x && x.lat && x.lon) {
+          var gruesa = /suburb|neighbourhood|city|quarter|administrative/.test((x.addresstype || '') + ' ' + (x.type || ''));
+          var g = [parseFloat(x.lat), parseFloat(x.lon), gruesa ? 1 : 0];
+          if (gruesa) { g[0] = it.lat; g[1] = it.lng; }
+          ls(claveGeo(it), JSON.stringify(g));
+          it.lat = g[0]; it.lng = g[1]; it.aprox = !!g[2];
+        } else {
+          ls(claveGeo(it), JSON.stringify([it.lat, it.lng, 1]));
+        }
+      })
+      .catch(function () { /* queda aproximada */ })
+      .then(function () {
+        P.geoActivo = false;
+        if (P !== props) return;
+        P.ubicados++;
+        dibujarPropsLuego();
+        barraProps();
+        setTimeout(function () { procesarCola(P); }, 1100);
+      });
+  }
+
+  function dibujarProps() { if (mapa && props.zona) mapa.setProps(props.items); }
+  var tDib = null;
+  function dibujarPropsLuego() { clearTimeout(tDib); tDib = setTimeout(dibujarProps, 500); }
+
+  function barraProps() {
+    var el = $('barraProps');
+    if (!props.zona) { el.hidden = true; return; }
+    var z = zonaPorId(props.zona);
+    var html = '<div class="bp-txt"><b>' + esc(z ? z.nombre : '') + '</b> · ';
+    if (props.captcha) {
+      html += 'MercadoLibre pide verificar que sos una persona.</div><button class="bp-btn" id="bpVerificar">Verificar</button>';
+    } else if (props.msg && !props.items.length) {
+      html += esc(props.msg) + '</div>';
+    } else {
+      html += props.items.length + ' avisos';
+      if (props.cargando) html += ' · buscando más…';
+      else if (props.cola.length || props.geoActivo) html += ' · ubicando ' + props.ubicados + '/' + props.items.length;
+      html += '</div>';
+    }
+    html += '<button class="bp-x" id="bpCerrar" aria-label="Cerrar">✕</button>';
+    el.innerHTML = html;
+    el.hidden = false;
+    $('bpCerrar').onclick = cerrarProps;
+    var v = $('bpVerificar');
+    if (v) v.onclick = function () { window.AndroidScraper.mostrar(); };
+  }
+
+  function fichaProp(it) {
+    var f = $('ficha');
+    f.innerHTML =
+      '<div class="fi-card">' +
+      (it.img ? '<img class="fi-img" src="' + esc(it.img) + '" alt="" onerror="this.remove()">' : '') +
+      '<div class="fi-body"><div class="fi-precio">' + esc(precioLargo(it)) + '</div>' +
+      '<div class="fi-tit">' + esc(it.t) + '</div>' +
+      (it.a ? '<div class="fi-attr">' + esc(it.a) + '</div>' : '') +
+      (it.loc ? '<div class="fi-loc">📍 ' + esc(it.loc) + (it.aprox ? ' <em>(ubicación aproximada)</em>' : '') + '</div>' : '') +
+      '<div class="btns"><a class="btn" target="_blank" href="' + esc(it.u) + '">Ver aviso</a>' +
+      '<button class="btn sec" id="fiCerrar">Cerrar</button></div></div></div>';
+    f.hidden = false;
+    $('fiCerrar').onclick = function () { f.hidden = true; };
+  }
+
   /* ---------- ajustes ---------- */
   function abrirAjustes() { $('inKey').value = ls('gkey') || ''; estado(); $('dlg').hidden = false; }
   function cerrarAjustes() { $('dlg').hidden = true; }
 
   window.manejarAtrasDesdeAndroid = function () {
+    if (!$('ficha').hidden) { $('ficha').hidden = true; return true; }
+    if (props.zona) { cerrarProps(); return true; }
     if (!$('dlg').hidden) { cerrarAjustes(); return true; }
     if (sel) { seleccionar(sel); return true; }
     return false;
@@ -328,6 +529,8 @@
     $('tabComprar').addEventListener('click', function () { modo = 'comprar'; sel = null; primerFit = true; render(); });
     $('lista').addEventListener('click', function (e) {
       if (e.target.closest && e.target.closest('a')) return;
+      var bp = e.target.closest ? e.target.closest('[data-props]') : null;
+      if (bp) { verPropiedades(bp.getAttribute('data-props')); return; }
       var c = e.target.closest ? e.target.closest('.card') : null;
       if (c) seleccionar(c.getAttribute('data-id'));
     });
