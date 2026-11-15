@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#16181b">
+<title>ZONAS CBA</title>
+<link rel="stylesheet" href="vendor/leaflet/leaflet.css">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <div class="logo">ZONAS<span>CBA</span></div>
+    <div class="lcd" id="estado">Cargando…</div>
+  </div>
+  <div class="acciones">
+    <button id="btnRefresh" class="ico" aria-label="Actualizar datos">⟳</button>
+    <button id="btnAjustes" class="ico" aria-label="Ajustes">⚙</button>
+  </div>
+</header>
+
+<nav class="tabs" role="tablist">
+  <button class="tab on" id="tabVender" role="tab" data-modo="vender">VENDER</button>
+  <button class="tab" id="tabComprar" role="tab" data-modo="comprar">COMPRAR</button>
+</nav>
+
+<main class="cuerpo">
+  <section class="mapa-wrap"><div id="map"></div><div class="leyenda" id="leyenda"></div></section>
+  <section class="lista-wrap"><div id="lista" class="lista"></div></section>
+</main>
+
+<div id="toast" class="toast" role="status"></div>
+
+<div id="dlg" class="dlg" hidden>
+  <div class="dlg-card">
+    <h2>Ajustes</h2>
+    <label class="campo">
+      <span>Clave de Google Maps (opcional)</span>
+      <input id="inKey" type="password" autocomplete="off" placeholder="AIza…">
+    </label>
+    <p class="ayuda">Sin clave el mapa usa OpenStreetMap, y cada zona abre Google Maps con un toque. Con clave, el mapa es de Google. La clave se guarda solo en este celu. Si la restringís por sitio web, permití <b>https://appassets.androidplatform.net/*</b>.</p>
+    <div class="fila">
+      <button id="btnGuardar" class="btn">GUARDAR</button>
+      <button id="btnQuitar" class="btn sec">QUITAR CLAVE</button>
+    </div>
+    <div class="info" id="infoDatos"></div>
+    <button id="btnCerrar" class="btn sec ancho">CERRAR</button>
+  </div>
+</div>
+
+<script src="vendor/leaflet/leaflet.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

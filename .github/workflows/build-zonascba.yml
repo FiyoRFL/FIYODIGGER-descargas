@@ -1,0 +1,57 @@
+name: Build ZONAS CBA APK
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'ZonasCBA/**'
+      - '!ZonasCBA/app/src/main/assets/data/**'
+      - '.github/workflows/build-zonascba.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Validate JavaScript and data
+        run: |
+          node --check ZonasCBA/app/src/main/assets/app.js
+          node -e "JSON.parse(require('fs').readFileSync('ZonasCBA/app/src/main/assets/data/zonas.json','utf8'))"
+
+      - name: Build debug APK
+        run: gradle --no-daemon -p ZonasCBA assembleDebug
+
+      - name: Rename APK
+        run: cp ZonasCBA/app/build/outputs/apk/debug/app-debug.apk ZonasCBA.apk
+
+      - name: Upload APK as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ZonasCBA-APK
+          path: ZonasCBA.apk
+          if-no-files-found: error
+
+      - name: Publish APK in Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: zonascba-apk-latest
+          name: ZONAS CBA (último APK)
+          files: ZonasCBA.apk
+          make_latest: false
