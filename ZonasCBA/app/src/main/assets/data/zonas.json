@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "actualizado": "2026-11-15",
   "ciudad": "Córdoba capital",
   "nota": "Puntajes de referencia armados con fuentes públicas. No es asesoramiento financiero ni una tasación.",
@@ -204,7 +204,10 @@
       "datos": [
         "Casa 3 ambientes con jardín: USD 150 a 250 mil (Roomix, 2026)"
       ],
-      "precio": "Casa 3 ambientes con jardín: USD 150 a 250 mil (Roomix, 2026)"
+      "precio": "Casa 3 ambientes con jardín: USD 150 a 250 mil (Roomix, 2026)",
+      "portales": {
+        "mercadolibre": "urca"
+      }
     },
     {
       "id": "arguello-la-calera",
@@ -229,7 +232,10 @@
         "Ojo con barrios cerrados sin escritura ni servicios propios (La Voz / Infonegocios)"
       ],
       "busqueda": "Argüello",
-      "precio": "Casa 3 ambientes en barrio cerrado: USD 120 a 200 mil (Roomix, 2026)"
+      "precio": "Casa 3 ambientes en barrio cerrado: USD 120 a 200 mil (Roomix, 2026)",
+      "portales": {
+        "mercadolibre": "arguello"
+      }
     },
     {
       "id": "general-paz",
@@ -252,7 +258,10 @@
       "datos": [
         "Lidera el ROI de alquiler junto con Nueva Córdoba (Roomix, 2026)",
         "Unas 70 obras en ejecución (Mercado)"
-      ]
+      ],
+      "portales": {
+        "mercadolibre": "general-paz"
+      }
     },
     {
       "id": "cofico",
@@ -299,7 +308,10 @@
       "motivo_comprar": "Es el que mejor ecuación precio-rendimiento ofrece: entrada barata y renta alta.",
       "datos": [
         "Mejor ecuación precio-rendimiento junto con General Paz (Roomix, 2026)"
-      ]
+      ],
+      "portales": {
+        "mercadolibre": "alberdi"
+      }
     },
     {
       "id": "alta-cordoba",

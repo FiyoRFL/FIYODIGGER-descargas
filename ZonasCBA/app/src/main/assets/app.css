@@ -1,7 +1,7 @@
 :root{
-  --bg:#f3f5f8; --card:#ffffff; --txt:#14202b; --mut:#6b7885; --linea:#e3e8ee;
-  --navy:#0f2a43; --azul:#1f6feb; --azul-s:#e8f0fe; --verde:#12a150; --verde-s:#e6f6ee;
-  --nar:#f5a524; --gris:#8b97a3; --sombra:0 1px 2px #0b1b2b14,0 4px 14px #0b1b2b12;
+  --bg:#0b1420; --card:#142233; --txt:#e8eef5; --mut:#8fa1b3; --linea:#243447;
+  --navy:#0a1522; --azul:#3d8bff; --azul-s:#17304f; --verde:#12a150; --verde-s:#0f2a1f;
+  --nar:#f5a524; --gris:#8b97a3; --sombra:0 1px 2px #0007,0 6px 18px #0006;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;height:100%;background:var(--bg);color:var(--txt);
@@ -103,3 +103,22 @@ button{font:inherit;color:inherit;cursor:pointer}
   .mapa-wrap{flex:1 1 55%;margin:0 0 0 14px}
   .lista-wrap{flex:1 1 45%}
 }
+
+.seg{background:#101c2b}
+.tab.on{background:#1d3047;color:#fff}
+.mapa-wrap,.leaflet-container{background:#0b1420}
+.leyenda{background:#0f1b29ee}
+.pin{background:#0f1b29}
+.pin.sel{background:#fff;border-color:#fff;color:#0b1420}
+.foto em{border-color:var(--card);background:#3d8bff}
+.nom small{color:#8ec0ff}
+.btn.sec{color:#8ec0ff}
+.precio{background:#0f1b29}
+.precio b,.fuentes a,.vermas{color:#8ec0ff}
+.dim .b{background:#0f1b29}
+.toast{background:#1d3047}
+.card.sel{border-color:#3d8bff}
+.top{border-bottom:1px solid #16283b}
+.campo input{background:#0f1b29}
+.motivo,.datos{color:#c3cfdb}
+.leyenda{color:#8fa1b3}

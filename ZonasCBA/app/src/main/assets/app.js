@@ -80,14 +80,21 @@
   }
 
   /* ---------- mapa ---------- */
-  var ESTILO_GOOGLE = [{ featureType: 'poi', stylers: [{ visibility: 'off' }] }];
+  var ESTILO_GOOGLE = [
+    { elementType: 'geometry', stylers: [{ color: '#142233' }] },
+    { elementType: 'labels.text.fill', stylers: [{ color: '#8fa1b3' }] },
+    { elementType: 'labels.text.stroke', stylers: [{ color: '#0b1420' }] },
+    { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#243447' }] },
+    { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#0b1420' }] },
+    { featureType: 'poi', stylers: [{ visibility: 'off' }] }
+  ];
 
   function mapaLeaflet() {
     var cont = $('map');
     cont.innerHTML = '';
     var m = L.map('map', { zoomControl: false, attributionControl: false }).setView(data.centro, 12);
     L.control.attribution({ prefix: false, position: 'bottomright' }).addTo(m);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
       maxZoom: 19, subdomains: 'abcd', attribution: '© OpenStreetMap © CARTO'
     }).addTo(m);
     L.control.zoom({ position: 'topright' }).addTo(m);
@@ -127,9 +134,9 @@
             map: m, position: { lat: it.z.lat, lng: it.z.lng },
             icon: {
               path: google.maps.SymbolPath.CIRCLE, scale: it.z.id === selId ? 20 : 16,
-              fillColor: it.z.id === selId ? '#0f2a43' : '#ffffff', fillOpacity: 1, strokeColor: color(it.p), strokeWeight: 3
+              fillColor: it.z.id === selId ? '#ffffff' : '#0f1b29', fillOpacity: 1, strokeColor: color(it.p), strokeWeight: 3
             },
-            label: { text: String(it.p), color: it.z.id === selId ? '#ffffff' : color(it.p), fontWeight: '800', fontSize: '12px' }
+            label: { text: String(it.p), color: it.z.id === selId ? '#0b1420' : color(it.p), fontWeight: '800', fontSize: '12px' }
           });
           k.addListener('click', function () { seleccionar(it.z.id); });
           return k;
@@ -174,22 +181,14 @@
 
   /* ---------- interfaz ---------- */
   function linkMaps(z) { return 'https://www.google.com/maps/search/?api=1&query=' + z.lat + ',' + z.lng; }
-  function gq(z, sitio) {
-    return 'https://www.google.com/search?q=' +
-      encodeURIComponent('propiedades en venta ' + (z.busqueda || z.nombre) + ' Córdoba site:' + sitio);
-  }
   function portales(z) {
-    var p = z.portales || {};
-    var zp = p.zonaprop ? 'https://www.zonaprop.com.ar/' + p.zonaprop : gq(z, 'zonaprop.com.ar');
-    var ap = p.argenprop ? 'https://www.argenprop.com/' + p.argenprop : gq(z, 'argenprop.com');
-    var ml = p.mercadolibre ? 'https://inmuebles.mercadolibre.com.ar/venta/cordoba/cordoba/' + encodeURIComponent(p.mercadolibre) + '/' : gq(z, 'inmuebles.mercadolibre.com.ar');
-    return '<div class="avisos"><span>Ver viviendas en venta con precio</span><div class="chips">' +
-      '<a class="chip zp" target="_blank" href="' + esc(zp) + '">Zonaprop</a>' +
-      '<a class="chip ap" target="_blank" href="' + esc(ap) + '">Argenprop</a>' +
-      '<a class="chip ml" target="_blank" href="' + esc(ml) + '">MercadoLibre</a>' +
-      '</div></div>';
+    var p = z.portales || {}, out = '';
+    if (p.zonaprop) out += '<a class="chip zp" target="_blank" href="' + esc('https://www.zonaprop.com.ar/' + p.zonaprop) + '">Zonaprop</a>';
+    if (p.argenprop) out += '<a class="chip ap" target="_blank" href="' + esc('https://www.argenprop.com/' + p.argenprop) + '">Argenprop</a>';
+    if (p.mercadolibre) out += '<a class="chip ml" target="_blank" href="' + esc('https://inmuebles.mercadolibre.com.ar/venta/cordoba/cordoba/' + encodeURIComponent(p.mercadolibre) + '/') + '">MercadoLibre</a>';
+    if (!out) return '';
+    return '<div class="avisos"><span>Ver viviendas en venta con precio</span><div class="chips">' + out + '</div></div>';
   }
-
   function linkRuta(z) { return 'https://www.google.com/maps/dir/?api=1&destination=' + z.lat + ',' + z.lng; }
 
   function tarjeta(it, i) {
