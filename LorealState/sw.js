@@ -1,5 +1,5 @@
 // Loreal State: primero busca lo nuevo; sin conexión usa lo guardado
-const CACHE = 'loreal-state-v1';
+const CACHE = 'loreal-state-v2';
 const BASE = ['./', 'index.html', 'styles.css', 'app.js', 'config.js', 'data/zonas.json', 'vendor/leaflet/leaflet.css', 'vendor/leaflet/leaflet.js', 'icon-192.png'];
 self.addEventListener('install', e => { self.skipWaiting(); e.waitUntil(caches.open(CACHE).then(c => c.addAll(BASE)).catch(() => {})); });
 self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));

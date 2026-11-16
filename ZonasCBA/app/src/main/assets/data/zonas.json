@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 5,
   "actualizado": "2026-11-15",
   "ciudad": "Córdoba capital",
   "nota": "Puntajes de referencia armados con fuentes públicas. No es asesoramiento financiero ni una tasación.",
@@ -88,13 +88,16 @@
         "valorizacion": 8
       },
       "comprar": {
-        "entrada": 3,
+        "entrada": 6,
         "renta": 6,
         "potencial": 5
       },
       "motivo_vender": "El barrio más demandado de la ciudad, con alquiler estudiantil constante. Ojo: hay muchísima obra nueva compitiendo con los usados.",
-      "motivo_comprar": "Es la apuesta más segura para renta y valorización, pero el precio de entrada es alto y el rendimiento porcentual es menor que en otros barrios.",
+      "motivo_comprar": "El barrio con más oferta y demanda de alquiler de la ciudad: renta pareja y fácil de alquilar, con m² de precio medio-alto.",
       "datos": [
+        "Departamentos: USD 1.913 por m² (mediana de 74 avisos de Zonaprop, nov 2026)",
+        "Rentabilidad bruta estimada: 6,0% anual (nov 2026)",
+        "Avisos publicados en Zonaprop: 3179 en venta, 1270 en alquiler (nov 2026)",
         "Zonaprop muestra más de 3.000 departamentos en venta en el barrio (2026)",
         "2 ambientes: USD 60 a 100 mil (Roomix, 2026)",
         "Unas 140 obras en ejecución en el barrio (Mercado)"
@@ -104,7 +107,20 @@
         "argenprop": "inmuebles/venta/nueva-cordoba",
         "mercadolibre": "nueva-cordoba"
       },
-      "precio": "Departamentos de USD 75 mil a 370 mil en avisos de Zonaprop (2026)"
+      "precio": "Departamentos: USD 1.913 por m² (mediana de 74 avisos de Zonaprop, nov 2026)",
+      "mercado": {
+        "venta_usd_m2": 1913,
+        "n_venta": 74,
+        "oferta_venta": 3179,
+        "alquiler_ars_m2": 15114,
+        "n_alq": 54,
+        "oferta_alquiler": 1270,
+        "rentabilidad": 6.0,
+        "renta_fiable": true,
+        "fecha": "2026-11-15",
+        "mep": 1580.9,
+        "fuente": "Mediana de avisos de departamentos en Zonaprop"
+      }
     },
     {
       "id": "cerro-de-las-rosas",
@@ -118,13 +134,16 @@
         "valorizacion": 8
       },
       "comprar": {
-        "entrada": 2,
-        "renta": 4,
+        "entrada": 5,
+        "renta": 6,
         "potencial": 5
       },
       "motivo_vender": "Barrio tradicional de clase alta con demanda firme. Tickets altos: se vende bien, pero el comprador tarda más en decidir.",
-      "motivo_comprar": "Preserva capital y valoriza bien, pero es de los más caros y rinde poco por alquiler.",
+      "motivo_comprar": "Preserva capital y valoriza bien; el m² está en la franja alta y hay pocos departamentos en alquiler para medir la renta.",
       "datos": [
+        "Departamentos: USD 1.937 por m² (mediana de 64 avisos de Zonaprop, nov 2026)",
+        "Rentabilidad bruta estimada: 6,7% anual (nov 2026) — pocos avisos de alquiler",
+        "Avisos publicados en Zonaprop: 71 en venta, 31 en alquiler (nov 2026)",
         "Casa premium de 5+ ambientes: USD 350 a 700 mil (Roomix, 2026)",
         "m² construido: USD 1.500 a 2.500, el más alto de la ciudad (Roomix, 2026)"
       ],
@@ -133,7 +152,20 @@
         "argenprop": "inmuebles/venta/cerro-de-las-rosas",
         "mercadolibre": "cerro-de-las-rosas"
       },
-      "precio": "Casas de unos USD 115 mil a 550 mil en una muestra de avisos de MercadoLibre (2026)"
+      "precio": "Departamentos: USD 1.937 por m² (mediana de 64 avisos de Zonaprop, nov 2026)",
+      "mercado": {
+        "venta_usd_m2": 1937,
+        "n_venta": 64,
+        "oferta_venta": 71,
+        "alquiler_ars_m2": 17143,
+        "n_alq": 7,
+        "oferta_alquiler": 31,
+        "rentabilidad": 6.7,
+        "renta_fiable": false,
+        "fecha": "2026-11-15",
+        "mep": 1580.9,
+        "fuente": "Mediana de avisos de departamentos en Zonaprop"
+      }
     },
     {
       "id": "villa-belgrano",
@@ -147,20 +179,37 @@
         "valorizacion": 7
       },
       "comprar": {
-        "entrada": 3,
+        "entrada": 4,
         "renta": 4,
         "potencial": 6
       },
       "motivo_vender": "Zona premium para familias, con buena demanda y entornos tranquilos.",
       "motivo_comprar": "Precios premium y renta moderada. Sirve para vivienda propia o para guardar valor a largo plazo.",
       "datos": [
+        "Departamentos: USD 2.182 por m² (mediana de 74 avisos de Zonaprop, nov 2026)",
+        "Rentabilidad bruta estimada: 5,2% anual (nov 2026)",
+        "Avisos publicados en Zonaprop: 244 en venta, 70 en alquiler (nov 2026)",
         "Figura entre los barrios top junto a Nueva Córdoba y Cerro de las Rosas (Roomix, 2026)"
       ],
       "portales": {
         "zonaprop": "inmuebles-venta-villa-belgrano-cordoba.html",
         "argenprop": "inmuebles/venta/villa-belgrano-cor",
         "mercadolibre": "villa-belgrano"
-      }
+      },
+      "mercado": {
+        "venta_usd_m2": 2182,
+        "n_venta": 74,
+        "oferta_venta": 244,
+        "alquiler_ars_m2": 15060,
+        "n_alq": 20,
+        "oferta_alquiler": 70,
+        "rentabilidad": 5.2,
+        "renta_fiable": true,
+        "fecha": "2026-11-15",
+        "mep": 1580.9,
+        "fuente": "Mediana de avisos de departamentos en Zonaprop"
+      },
+      "precio": "Departamentos: USD 2.182 por m² (mediana de 74 avisos de Zonaprop, nov 2026)"
     },
     {
       "id": "valle-escondido",
@@ -174,20 +223,37 @@
         "valorizacion": 8
       },
       "comprar": {
-        "entrada": 3,
+        "entrada": 2,
         "renta": 3,
         "potencial": 7
       },
       "motivo_vender": "Es de las zonas con mejor historial de valorización del corredor noroeste.",
-      "motivo_comprar": "Apuesta de valorización más que de renta: se compra para que el activo suba, no para alquilar.",
+      "motivo_comprar": "El m² más caro de la lista y la renta más baja: se compra para valorizar o vivir, no para alquilar.",
       "datos": [
+        "Departamentos: USD 2.692 por m² (mediana de 74 avisos de Zonaprop, nov 2026)",
+        "Rentabilidad bruta estimada: 4,6% anual (nov 2026)",
+        "Avisos publicados en Zonaprop: 157 en venta, 47 en alquiler (nov 2026)",
         "Mayor track record de valorización de capital junto con el corredor noroeste (Roomix, 2026)"
       ],
       "portales": {
         "zonaprop": "inmuebles-venta-valle-escondido.html",
         "argenprop": "inmuebles/venta/valle-escondido",
         "mercadolibre": "valle-escondido"
-      }
+      },
+      "mercado": {
+        "venta_usd_m2": 2692,
+        "n_venta": 74,
+        "oferta_venta": 157,
+        "alquiler_ars_m2": 16216,
+        "n_alq": 21,
+        "oferta_alquiler": 47,
+        "rentabilidad": 4.6,
+        "renta_fiable": true,
+        "fecha": "2026-11-15",
+        "mep": 1580.9,
+        "fuente": "Mediana de avisos de departamentos en Zonaprop"
+      },
+      "precio": "Departamentos: USD 2.692 por m² (mediana de 74 avisos de Zonaprop, nov 2026)"
     },
     {
       "id": "urca",
@@ -201,20 +267,36 @@
         "valorizacion": 6
       },
       "comprar": {
-        "entrada": 4,
-        "renta": 4,
+        "entrada": 5,
+        "renta": 5,
         "potencial": 5
       },
       "motivo_vender": "Barrio residencial de nivel alto, pegado a Cerro de las Rosas, con salida más fluida por ser algo más accesible.",
       "motivo_comprar": "Alternativa más barata que Cerro de las Rosas con perfil parecido.",
       "datos": [
+        "Departamentos: USD 2.066 por m² (mediana de 47 avisos de Zonaprop, nov 2026)",
+        "Rentabilidad bruta estimada: 6,0% anual (nov 2026) — pocos avisos de alquiler",
+        "Avisos publicados en Zonaprop: 58 en venta, 10 en alquiler (nov 2026)",
         "Casa 3 ambientes con jardín: USD 150 a 250 mil (Roomix, 2026)"
       ],
-      "precio": "Casa 3 ambientes con jardín: USD 150 a 250 mil (Roomix, 2026)",
+      "precio": "Departamentos: USD 2.066 por m² (mediana de 47 avisos de Zonaprop, nov 2026)",
       "portales": {
         "zonaprop": "inmuebles-venta-urca.html",
         "argenprop": "inmuebles/venta/urca",
         "mercadolibre": "urca"
+      },
+      "mercado": {
+        "venta_usd_m2": 2066,
+        "n_venta": 47,
+        "oferta_venta": 58,
+        "alquiler_ars_m2": 16201,
+        "n_alq": 8,
+        "oferta_alquiler": 10,
+        "rentabilidad": 6.0,
+        "renta_fiable": false,
+        "fecha": "2026-11-15",
+        "mep": 1580.9,
+        "fuente": "Mediana de avisos de departamentos en Zonaprop"
       }
     },
     {
@@ -229,22 +311,38 @@
         "valorizacion": 6
       },
       "comprar": {
-        "entrada": 6,
+        "entrada": 7,
         "renta": 4,
         "potencial": 8
       },
       "motivo_vender": "Muy buscado por familias que quieren casa con jardín en barrio cerrado.",
       "motivo_comprar": "Es la zona con más proyección: casas más amplias a menor precio que el centro y desarrollos nuevos.",
       "datos": [
+        "Departamentos: USD 1.684 por m² (mediana de 81 avisos de Zonaprop, nov 2026)",
+        "Rentabilidad bruta estimada: 5,3% anual (nov 2026)",
+        "Avisos publicados en Zonaprop: 119 en venta, 18 en alquiler (nov 2026)",
         "Casa 3 ambientes con jardín en barrio cerrado: USD 120 a 200 mil (Roomix, 2026)",
         "Ojo con barrios cerrados sin escritura ni servicios propios (La Voz / Infonegocios)"
       ],
       "busqueda": "Argüello",
-      "precio": "Casa 3 ambientes en barrio cerrado: USD 120 a 200 mil (Roomix, 2026)",
+      "precio": "Departamentos: USD 1.684 por m² (mediana de 81 avisos de Zonaprop, nov 2026)",
       "portales": {
         "zonaprop": "inmuebles-venta-arguello.html",
         "argenprop": "inmuebles/venta/arguello",
         "mercadolibre": "arguello"
+      },
+      "mercado": {
+        "venta_usd_m2": 1684,
+        "n_venta": 81,
+        "oferta_venta": 119,
+        "alquiler_ars_m2": 11667,
+        "n_alq": 17,
+        "oferta_alquiler": 18,
+        "rentabilidad": 5.3,
+        "renta_fiable": true,
+        "fecha": "2026-11-15",
+        "mep": 1580.9,
+        "fuente": "Mediana de avisos de departamentos en Zonaprop"
       }
     },
     {
@@ -259,21 +357,37 @@
         "valorizacion": 6
       },
       "comprar": {
-        "entrada": 7,
-        "renta": 8,
+        "entrada": 6,
+        "renta": 6,
         "potencial": 7
       },
       "motivo_vender": "Barrio consolidado, con mucha obra nueva y demanda de inversores.",
-      "motivo_comprar": "Es de los que lideran el rendimiento por alquiler, con una de las mejores relaciones precio-rendimiento.",
+      "motivo_comprar": "Precio del m² intermedio, mucha oferta y alquiler firme: equilibrio entre entrada, renta y crecimiento.",
       "datos": [
-        "Lidera el ROI de alquiler junto con Nueva Córdoba (Roomix, 2026)",
+        "Departamentos: USD 1.710 por m² (mediana de 73 avisos de Zonaprop, nov 2026)",
+        "Rentabilidad bruta estimada: 5,9% anual (nov 2026)",
+        "Avisos publicados en Zonaprop: 1023 en venta, 401 en alquiler (nov 2026)",
         "Unas 70 obras en ejecución (Mercado)"
       ],
       "portales": {
         "zonaprop": "inmuebles-venta-general-paz-cordoba.html",
         "argenprop": "inmuebles/venta/general-paz-cor-cc",
         "mercadolibre": "general-paz"
-      }
+      },
+      "mercado": {
+        "venta_usd_m2": 1710,
+        "n_venta": 73,
+        "oferta_venta": 1023,
+        "alquiler_ars_m2": 13363,
+        "n_alq": 52,
+        "oferta_alquiler": 401,
+        "rentabilidad": 5.9,
+        "renta_fiable": true,
+        "fecha": "2026-11-15",
+        "mep": 1580.9,
+        "fuente": "Mediana de avisos de departamentos en Zonaprop"
+      },
+      "precio": "Departamentos: USD 1.710 por m² (mediana de 73 avisos de Zonaprop, nov 2026)"
     },
     {
       "id": "cofico",
@@ -287,20 +401,37 @@
         "valorizacion": 6
       },
       "comprar": {
-        "entrada": 6,
-        "renta": 7,
+        "entrada": 8,
+        "renta": 6,
         "potencial": 6
       },
       "motivo_vender": "Barrio muy pedido por inversores y jóvenes, con salida ágil.",
       "motivo_comprar": "Zona caliente para inversión en departamentos, con precio intermedio y buen alquiler.",
       "datos": [
+        "Departamentos: USD 1.406 por m² (mediana de 82 avisos de Zonaprop, nov 2026)",
+        "Rentabilidad bruta estimada: 6,2% anual (nov 2026)",
+        "Avisos publicados en Zonaprop: 245 en venta, 124 en alquiler (nov 2026)",
         "Entre las zonas calientes de inversión en departamentos (Perfil)"
       ],
       "portales": {
         "zonaprop": "inmuebles-venta-cofico.html",
         "argenprop": "inmuebles/venta/cofico",
         "mercadolibre": "cofico"
-      }
+      },
+      "mercado": {
+        "venta_usd_m2": 1406,
+        "n_venta": 82,
+        "oferta_venta": 245,
+        "alquiler_ars_m2": 11429,
+        "n_alq": 55,
+        "oferta_alquiler": 124,
+        "rentabilidad": 6.2,
+        "renta_fiable": true,
+        "fecha": "2026-11-15",
+        "mep": 1580.9,
+        "fuente": "Mediana de avisos de departamentos en Zonaprop"
+      },
+      "precio": "Departamentos: USD 1.406 por m² (mediana de 82 avisos de Zonaprop, nov 2026)"
     },
     {
       "id": "alberdi",
@@ -315,19 +446,36 @@
       },
       "comprar": {
         "entrada": 9,
-        "renta": 8,
+        "renta": 9,
         "potencial": 6
       },
       "motivo_vender": "Demanda pareja y precios bajos, así que el margen para vender caro es menor.",
-      "motivo_comprar": "Es el que mejor ecuación precio-rendimiento ofrece: entrada barata y renta alta.",
+      "motivo_comprar": "El m² más barato de las zonas analizadas y una de las rentabilidades más altas: la mejor ecuación precio-rendimiento.",
       "datos": [
+        "Departamentos: USD 1.150 por m² (mediana de 82 avisos de Zonaprop, nov 2026)",
+        "Rentabilidad bruta estimada: 7,6% anual (nov 2026)",
+        "Avisos publicados en Zonaprop: 618 en venta, 354 en alquiler (nov 2026)",
         "Mejor ecuación precio-rendimiento junto con General Paz (Roomix, 2026)"
       ],
       "portales": {
         "zonaprop": "inmuebles-venta-alberdi-cordoba.html",
         "argenprop": "inmuebles/venta/alberdi-cor",
         "mercadolibre": "alberdi"
-      }
+      },
+      "mercado": {
+        "venta_usd_m2": 1150,
+        "n_venta": 82,
+        "oferta_venta": 618,
+        "alquiler_ars_m2": 11500,
+        "n_alq": 59,
+        "oferta_alquiler": 354,
+        "rentabilidad": 7.6,
+        "renta_fiable": true,
+        "fecha": "2026-11-15",
+        "mep": 1580.9,
+        "fuente": "Mediana de avisos de departamentos en Zonaprop"
+      },
+      "precio": "Departamentos: USD 1.150 por m² (mediana de 82 avisos de Zonaprop, nov 2026)"
     },
     {
       "id": "alta-cordoba",
@@ -341,20 +489,37 @@
         "valorizacion": 6
       },
       "comprar": {
-        "entrada": 8,
-        "renta": 7,
+        "entrada": 9,
+        "renta": 9,
         "potencial": 8
       },
       "motivo_vender": "Demanda en crecimiento, pero todavía por debajo de los barrios consolidados.",
-      "motivo_comprar": "La apuesta en crecimiento: entrada baja y margen para valorizar a mediano plazo.",
+      "motivo_comprar": "Entrada baja, rentabilidad de las más altas y margen para valorizar a mediano plazo.",
       "datos": [
+        "Departamentos: USD 1.183 por m² (mediana de 88 avisos de Zonaprop, nov 2026)",
+        "Rentabilidad bruta estimada: 7,7% anual (nov 2026)",
+        "Avisos publicados en Zonaprop: 306 en venta, 213 en alquiler (nov 2026)",
         "Señalado como la apuesta en crecimiento (Roomix, 2026)"
       ],
       "portales": {
         "zonaprop": "inmuebles-venta-alta-cordoba.html",
         "argenprop": "inmuebles/venta/alta-cordoba",
         "mercadolibre": "alta-cordoba"
-      }
+      },
+      "mercado": {
+        "venta_usd_m2": 1183,
+        "n_venta": 88,
+        "oferta_venta": 306,
+        "alquiler_ars_m2": 12000,
+        "n_alq": 59,
+        "oferta_alquiler": 213,
+        "rentabilidad": 7.7,
+        "renta_fiable": true,
+        "fecha": "2026-11-15",
+        "mep": 1580.9,
+        "fuente": "Mediana de avisos de departamentos en Zonaprop"
+      },
+      "precio": "Departamentos: USD 1.183 por m² (mediana de 88 avisos de Zonaprop, nov 2026)"
     }
   ]
 }

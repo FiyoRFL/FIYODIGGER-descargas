@@ -49,6 +49,9 @@
   }
   function color(p) { return p >= 75 ? '#2ecc71' : p >= 65 ? '#9ccc3a' : p >= 55 ? '#f0ad3c' : '#8a96a6'; }
   function etiqueta(p) { return p >= 75 ? 'Excelente' : p >= 65 ? 'Muy buena' : p >= 55 ? 'Buena' : 'Media'; }
+  function miles(n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
+  var presu = 0;
+  function mesTxt(f) { var m = /^(\d{4})-(\d{2})/.exec(f || ''); return m ? ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'][+m[2] - 1] + ' ' + m[1] : ''; }
   function zona(id) { return data.zonas.filter(function (z) { return z.id === id; })[0]; }
 
   /* ---------- área de cada barrio (OpenStreetMap) ---------- */
@@ -203,7 +206,9 @@
       var c = color(it.p);
       return '<div class="card' + (sel === it.z.id ? ' sel' : '') + '" data-id="' + esc(it.z.id) + '" role="button" tabindex="0">' +
         '<div class="num">' + (i + 1) + '</div>' +
-        '<div class="info"><b>' + esc(it.z.nombre) + '</b><small>' + esc(it.z.tipo || '') + '</small></div>' +
+        '<div class="info"><b>' + esc(it.z.nombre) + '</b><small>' + esc(it.z.tipo || '') +
+        (it.z.mercado ? ' · USD ' + miles(it.z.mercado.venta_usd_m2) + '/m²' : '') + '</small>' +
+        (presu && it.z.mercado ? '<span class="alcanza">Te alcanza para ≈ ' + Math.floor(presu / it.z.mercado.venta_usd_m2) + ' m²</span>' : '') + '</div>' +
         '<div class="pts" style="color:' + c + '"><b>' + it.p + '</b><span>' + etiqueta(it.p) + '</span></div></div>';
     }).join('');
     $('pie').textContent = 'Datos al ' + fechaTxt(data.actualizado) + ' · Guía de referencia, no es una tasación.';
@@ -223,19 +228,35 @@
     return out ? '<div class="h-sec">Propiedades en venta con precio</div><div class="portales">' + out + '</div>' : '';
   }
 
+  function mercado(z) {
+    var m = z.mercado;
+    if (!m) return z.precio ? '<div class="precio"><b>Precios de referencia:</b> ' + esc(z.precio) + '</div>' : '';
+    var r = m.rentabilidad != null ? String(m.rentabilidad).replace('.', ',') + '%' : '—';
+    var alc = presu ? '<div class="h-alc">Con USD ' + miles(presu) + ' te alcanza para unos <b>' + Math.floor(presu / m.venta_usd_m2) + ' m²</b> de departamento acá.</div>' : '';
+    return '<div class="h-sec">Datos reales del mercado · ' + esc(mesTxt(m.fecha)) + '</div>' +
+      '<div class="stats">' +
+      '<div class="stat"><b>USD ' + miles(m.venta_usd_m2) + '</b><span>m² en venta</span></div>' +
+      '<div class="stat"><b>$ ' + miles(m.alquiler_ars_m2) + '</b><span>m² de alquiler por mes</span></div>' +
+      '<div class="stat"><b>' + r + '</b><span>rentabilidad bruta anual</span></div>' +
+      '</div>' + alc +
+      '<p class="fuente">' + esc(m.fuente) + ' (' + m.n_venta + ' en venta, ' + m.n_alq + ' en alquiler). Hay ' + miles(m.oferta_venta || 0) + ' departamentos publicados en venta y ' + miles(m.oferta_alquiler || 0) + ' en alquiler. Dólar MEP $ ' + miles(m.mep) + '.' +
+      (m.renta_fiable ? '' : ' <em>Hay pocos avisos de alquiler: tomá la rentabilidad como orientativa.</em>') + '</p>';
+  }
+
   function ficha() {
     var z = zona(sel); if (!z) return;
     var p = puntaje(z, modo), c = color(p);
     var dims = data.dimensiones[modo].map(function (d) {
       var v = z[modo][d.k];
-      return '<div class="dim"><span>' + esc(d.t) + '</span><em>' + v + '/10</em><div class="b"><i style="width:' + v * 10 + '%"></i></div></div>';
+      var real = z.mercado && (d.k === 'entrada' || (d.k === 'renta' && z.mercado.rentabilidad != null));
+      return '<div class="dim"><span>' + esc(d.t) + (real ? ' <i class="real">dato real</i>' : '') + '</span><em>' + v + '/10</em><div class="b"><i style="width:' + v * 10 + '%"></i></div></div>';
     }).join('');
     var datos = (z.datos || []).length ? '<div class="h-sec">Datos</div><ul class="datos">' + z.datos.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>' : '';
     $('hojaCont').innerHTML =
       '<h2 class="h-tit">' + esc(z.nombre) + '</h2><span class="h-tipo">' + esc(z.tipo || '') + '</span>' +
       '<div class="h-score"><div class="anillo" style="background:conic-gradient(' + c + ' ' + p * 3.6 + 'deg,#2a3342 0)"><div style="color:' + c + '">' + p + '</div></div>' +
       '<p><b style="color:' + c + '">' + etiqueta(p) + ' para ' + (modo === 'comprar' ? 'comprar' : 'vender') + '.</b> ' + esc(z['motivo_' + modo] || '') + '</p></div>' +
-      (z.precio ? '<div class="precio"><b>Precios de referencia:</b> ' + esc(z.precio) + '</div>' : '') +
+      mercado(z) +
       portales(z) +
       '<div class="h-sec">Puntaje en detalle</div><div class="dims">' + dims + '</div>' + datos +
       '<div class="btns"><a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=' + z.lat + ',' + z.lng + '">Google Maps</a>' +
@@ -289,6 +310,14 @@
       if (mapa) mapa.estilo(oscuro); ls('oscuro', oscuro ? '1' : null);
     };
     $('btnRefresh').onclick = function () { actualizar(true); };
+    var guardado = parseInt(ls('presu') || '0', 10) || 0;
+    if (guardado) { presu = guardado; $('inPresu').value = miles(guardado); }
+    $('inPresu').addEventListener('input', function () {
+      var n = parseInt(this.value.replace(/[^\d]/g, ''), 10) || 0;
+      presu = n; this.value = n ? miles(n) : '';
+      ls('presu', n ? String(n) : null);
+      render(false);
+    });
     $('btnLista').onclick = function () {
       var oculto = document.body.classList.toggle('sin-lista');
       $('btnLista').textContent = oculto ? '☰ Ver zonas' : '⤢ Mapa completo';
