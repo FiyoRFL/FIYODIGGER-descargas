@@ -227,3 +227,7 @@ body.sin-lista .mapa{flex:1 1 auto}
   border:2px solid #d4af6a;white-space:nowrap;box-shadow:0 2px 6px #0006;position:relative}
 .ppin.buena{border-color:#2ecc71}
 .ppin.sel{background:#1d2430;color:#fff;z-index:9}
+
+.ppin.aprox{opacity:.72;border-style:dashed}
+.ppin.aprox.sel{opacity:1}
+.aviso .sinmapa{display:block;margin-top:6px;text-align:left}
