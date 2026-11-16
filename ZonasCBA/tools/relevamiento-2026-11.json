@@ -1,11 +1,86 @@
-{"fecha":"2026-11-15","mep":1580.9,"res":{
-"nueva-cordoba":{"venta_usd_m2":1913,"n_venta":74,"oferta_venta":3179,"alquiler_ars_m2":15114,"n_alq":54,"oferta_alquiler":1270},
-"cerro-de-las-rosas":{"venta_usd_m2":1937,"n_venta":64,"oferta_venta":71,"alquiler_ars_m2":17143,"n_alq":7,"oferta_alquiler":31},
-"villa-belgrano":{"venta_usd_m2":2182,"n_venta":74,"oferta_venta":244,"alquiler_ars_m2":15060,"n_alq":20,"oferta_alquiler":70},
-"valle-escondido":{"venta_usd_m2":2692,"n_venta":74,"oferta_venta":157,"alquiler_ars_m2":16216,"n_alq":21,"oferta_alquiler":47},
-"urca":{"venta_usd_m2":2066,"n_venta":47,"oferta_venta":58,"alquiler_ars_m2":16201,"n_alq":8,"oferta_alquiler":10},
-"arguello-la-calera":{"venta_usd_m2":1684,"n_venta":81,"oferta_venta":119,"alquiler_ars_m2":11667,"n_alq":17,"oferta_alquiler":18},
-"general-paz":{"venta_usd_m2":1710,"n_venta":73,"oferta_venta":1023,"alquiler_ars_m2":13363,"n_alq":52,"oferta_alquiler":401},
-"cofico":{"venta_usd_m2":1406,"n_venta":82,"oferta_venta":245,"alquiler_ars_m2":11429,"n_alq":55,"oferta_alquiler":124},
-"alberdi":{"venta_usd_m2":1150,"n_venta":82,"oferta_venta":618,"alquiler_ars_m2":11500,"n_alq":59,"oferta_alquiler":354},
-"alta-cordoba":{"venta_usd_m2":1183,"n_venta":88,"oferta_venta":306,"alquiler_ars_m2":12000,"n_alq":59,"oferta_alquiler":213}}}
+{
+ "fecha": "2026-11-15",
+ "mep": 1580.9,
+ "res": {
+  "nueva-cordoba": {
+   "venta_usd_m2": 1909,
+   "n_venta": 123,
+   "oferta_venta": 3179,
+   "alquiler_ars_m2": 15114,
+   "n_alq": 54,
+   "oferta_alquiler": 1270
+  },
+  "cerro-de-las-rosas": {
+   "venta_usd_m2": 1937,
+   "n_venta": 64,
+   "oferta_venta": 71,
+   "alquiler_ars_m2": 17143,
+   "n_alq": 7,
+   "oferta_alquiler": 31
+  },
+  "villa-belgrano": {
+   "venta_usd_m2": 2221,
+   "n_venta": 116,
+   "oferta_venta": 244,
+   "alquiler_ars_m2": 15060,
+   "n_alq": 20,
+   "oferta_alquiler": 70
+  },
+  "valle-escondido": {
+   "venta_usd_m2": 2591,
+   "n_venta": 113,
+   "oferta_venta": 157,
+   "alquiler_ars_m2": 16216,
+   "n_alq": 21,
+   "oferta_alquiler": 47
+  },
+  "urca": {
+   "venta_usd_m2": 2066,
+   "n_venta": 47,
+   "oferta_venta": 58,
+   "alquiler_ars_m2": 16201,
+   "n_alq": 8,
+   "oferta_alquiler": 10
+  },
+  "arguello-la-calera": {
+   "venta_usd_m2": 1659,
+   "n_venta": 96,
+   "oferta_venta": 119,
+   "alquiler_ars_m2": 11667,
+   "n_alq": 17,
+   "oferta_alquiler": 18
+  },
+  "general-paz": {
+   "venta_usd_m2": 1740,
+   "n_venta": 114,
+   "oferta_venta": 1023,
+   "alquiler_ars_m2": 13363,
+   "n_alq": 52,
+   "oferta_alquiler": 401
+  },
+  "cofico": {
+   "venta_usd_m2": 1442,
+   "n_venta": 133,
+   "oferta_venta": 245,
+   "alquiler_ars_m2": 11429,
+   "n_alq": 55,
+   "oferta_alquiler": 124
+  },
+  "alberdi": {
+   "venta_usd_m2": 1172,
+   "n_venta": 115,
+   "oferta_venta": 618,
+   "alquiler_ars_m2": 11500,
+   "n_alq": 59,
+   "oferta_alquiler": 354
+  },
+  "alta-cordoba": {
+   "venta_usd_m2": 1176,
+   "n_venta": 144,
+   "oferta_venta": 306,
+   "alquiler_ars_m2": 12000,
+   "n_alq": 59,
+   "oferta_alquiler": 213
+  }
+ }
+}

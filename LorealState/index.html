@@ -36,16 +36,64 @@
 
 <div class="app">
   <aside class="panel">
-    <nav class="seg" role="tablist">
-      <button class="tab on" id="tabComprar" data-modo="comprar">Comprar</button>
-      <button class="tab" id="tabVender" data-modo="vender">Vender</button>
+    <nav class="nav" role="tablist">
+      <button class="nv on" data-vista="zonas">Zonas</button>
+      <button class="nv" data-vista="opor">Oportunidades</button>
+      <button class="nv" data-vista="tasar">Vender mi depto</button>
     </nav>
-    <div class="intro" id="intro"></div>
-    <label class="calc">
-      <span>¿Cuánto tenés para invertir?</span>
-      <div class="calc-in"><b>USD</b><input id="inPresu" type="text" inputmode="numeric" placeholder="ej. 80.000" autocomplete="off"></div>
-    </label>
-    <div class="lista" id="lista"></div>
+
+    <div class="vista" id="vZonas">
+      <nav class="seg" role="tablist">
+        <button class="tab on" id="tabComprar" data-modo="comprar">Comprar</button>
+        <button class="tab" id="tabVender" data-modo="vender">Vender</button>
+      </nav>
+      <div class="intro" id="intro"></div>
+      <label class="calc">
+        <span>¿Cuánto tenés para invertir?</span>
+        <div class="calc-in"><b>USD</b><input id="inPresu" type="text" inputmode="numeric" placeholder="ej. 80.000" autocomplete="off"></div>
+      </label>
+      <div class="lista" id="lista"></div>
+    </div>
+
+    <div class="vista" id="vOpor" hidden>
+      <details class="filtros" id="filtros" open>
+        <summary>Filtros <span id="fResumen"></span></summary>
+        <div class="f-grid">
+          <label>Presupuesto máx. (USD)<input id="fMax" type="text" inputmode="numeric" placeholder="sin límite"></label>
+          <label>Barrio<select id="fBarrio"><option value="">Todos</option></select></label>
+          <label>m² mínimos<input id="fM2" type="text" inputmode="numeric" placeholder="0"></label>
+          <label>Ordenar por<select id="fOrden">
+            <option value="vs">Más barato que su barrio</option>
+            <option value="renta">Mejor rentabilidad</option>
+            <option value="baja">Bajó de precio</option>
+            <option value="precio">Menor precio</option>
+          </select></label>
+        </div>
+        <div class="chips-f" id="fDorm">
+          <span>Dormitorios</span>
+          <button data-d="" class="on">Todos</button><button data-d="1">1</button><button data-d="2">2</button><button data-d="3">3+</button>
+        </div>
+        <div class="toggles">
+          <label><input type="checkbox" id="fCoch"> Con cochera</label>
+          <label><input type="checkbox" id="fPozo"> Incluir en pozo</label>
+          <label><input type="checkbox" id="fBaja"> Solo los que bajaron</label>
+        </div>
+      </details>
+      <div class="res-info" id="oInfo"></div>
+      <div class="lista" id="oLista"></div>
+    </div>
+
+    <div class="vista" id="vTasar" hidden>
+      <div class="intro"><b>¿A cuánto lo publico?</b>Te armo un rango con departamentos parecidos que hoy están a la venta.</div>
+      <div class="f-grid tasar">
+        <label>Barrio<select id="tBarrio"></select></label>
+        <label>m² cubiertos<input id="tM2" type="text" inputmode="numeric" placeholder="ej. 55"></label>
+        <label>Dormitorios<select id="tDorm"><option value="1">1</option><option value="2" selected>2</option><option value="3">3 o más</option><option value="0">Monoambiente</option></select></label>
+        <label>Cochera<select id="tCoch"><option value="0">No</option><option value="1">Sí</option></select></label>
+      </div>
+      <div id="tRes"></div>
+    </div>
+
     <div class="pie" id="pie"></div>
   </aside>
 
@@ -56,7 +104,7 @@
       <button id="btnEstilo" class="mbtn" aria-label="Cambiar mapa">☀ Claro</button>
       <button id="btnTodo" class="mbtn" aria-label="Ver todas las zonas">⤢ Todas</button>
     </div>
-    <div class="leyenda"><span><i class="c1"></i>Excelente</span><span><i class="c2"></i>Muy buena</span><span><i class="c3"></i>Buena</span></div>
+    <div class="leyenda" id="leyenda"><span><i class="c1"></i>Excelente</span><span><i class="c2"></i>Muy buena</span><span><i class="c3"></i>Buena</span></div>
   </section>
 </div>
 

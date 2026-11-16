@@ -118,6 +118,20 @@
       },
       todas: function (items) { m.flyToBounds(items.map(function (it) { return [it.z.lat, it.z.lng]; }), { padding: [50, 50], duration: 0.6 }); },
       estilo: function (osc) { m.removeLayer(base); base = (osc ? noche : claro).addTo(m); },
+      props: function (items, selId, onClick) {
+        if (!this._capa) this._capa = L.layerGroup().addTo(m);
+        var capa = this._capa; capa.clearLayers();
+        items.forEach(function (a) {
+          var cls = 'ppin' + (a.id === selId ? ' sel' : '') + (a.vs <= -10 ? ' buena' : '');
+          L.marker([a.lat, a.lng], { icon: L.divIcon({ className: '', html: '<div class="' + cls + '">' + esc(precioK(a.p)) + '</div>', iconSize: [0, 0] }), zIndexOffset: a.id === selId ? 2000 : 500 })
+            .addTo(capa).on('click', function () { onClick(a.id); });
+        });
+      },
+      encuadrar: function (pts) {
+        if (!pts.length) return;
+        if (pts.length === 1) { m.flyTo(pts[0], 16, { duration: 0.6 }); return; }
+        m.flyToBounds(pts, { padding: [40, 40], maxZoom: 16, duration: 0.6 });
+      },
       resize: function () { m.invalidateSize(); }
     };
   }
@@ -170,6 +184,26 @@
         m.fitBounds(b, 50);
       },
       estilo: function (osc) { m.setOptions({ styles: osc ? G_OSCURO : G_CLARO }); },
+      props: function (items, selId, onClick) {
+        (this._mk || []).forEach(function (k) { k.setMap(null); });
+        this._mk = items.map(function (a) {
+          var s = a.id === selId, c = a.vs <= -10 ? '#2ecc71' : '#d4af6a';
+          var k = new google.maps.Marker({
+            map: m, position: { lat: a.lat, lng: a.lng }, zIndex: s ? 2000 : 500,
+            icon: { path: 'M -24,-11 L 24,-11 L 24,9 L 5,9 L 0,15 L -5,9 L -24,9 Z', fillColor: s ? '#1d2430' : '#ffffff', fillOpacity: 1, strokeColor: c, strokeWeight: 2, scale: 1, labelOrigin: new google.maps.Point(0, -1) },
+            label: { text: precioK(a.p), color: s ? '#ffffff' : '#1d2430', fontWeight: '700', fontSize: '11px' }
+          });
+          k.addListener('click', function () { onClick(a.id); });
+          return k;
+        });
+      },
+      encuadrar: function (pts) {
+        if (!pts.length) return;
+        if (pts.length === 1) { m.panTo({ lat: pts[0][0], lng: pts[0][1] }); m.setZoom(16); return; }
+        var b = new google.maps.LatLngBounds();
+        pts.forEach(function (p) { b.extend({ lat: p[0], lng: p[1] }); });
+        m.fitBounds(b, 40);
+      },
       resize: function () { google.maps.event.trigger(m, 'resize'); }
     };
   }
@@ -196,6 +230,7 @@
 
   /* ---------- interfaz ---------- */
   function render(encuadrar) {
+    if (vista !== 'zonas') return;
     var items = ranking();
     $('tabComprar').classList.toggle('on', modo === 'comprar');
     $('tabVender').classList.toggle('on', modo === 'vender');
@@ -279,6 +314,196 @@
     render(true);
   }
 
+
+  /* ---------- avisos: oportunidades y tasación ---------- */
+  var vista = 'zonas', avisos = null, selAviso = null;
+  var AVISOS_REMOTO = 'https://loreal-state.netlify.app/data/avisos.json';
+  function precioK(p) { return p >= 1e6 ? 'US$' + (Math.round(p / 1e5) / 10) + 'M' : 'US$' + Math.round(p / 1000) + 'k'; }
+  function nombreZ(id) { var z = zona(id); return z ? z.nombre.split('–')[0].trim() : id; }
+  function linkAviso(a) { return 'https://www.zonaprop.com.ar' + a.u; }
+  function cargarAvisos() {
+    var local = fetch('data/avisos.json').then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
+    var remoto = fetch(AVISOS_REMOTO + '?t=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
+    return Promise.all([local, remoto]).then(function (r) {
+      var a = r[0], b = r[1];
+      var ok = function (x) { return x && Array.isArray(x.avisos) && x.avisos.length; };
+      avisos = ok(b) && (!ok(a) || (b.fecha || '') >= (a.fecha || '')) ? b : (ok(a) ? a : null);
+    });
+  }
+
+  function cambiarVista(v) {
+    vista = v;
+    [].forEach.call(document.querySelectorAll('.nv'), function (b) { b.classList.toggle('on', b.getAttribute('data-vista') === v); });
+    $('vZonas').hidden = v !== 'zonas'; $('vOpor').hidden = v !== 'opor'; $('vTasar').hidden = v !== 'tasar';
+    $('hoja').hidden = true; selAviso = null;
+    $('leyenda').innerHTML = v === 'zonas'
+      ? '<span><i class="c1"></i>Excelente</span><span><i class="c2"></i>Muy buena</span><span><i class="c3"></i>Buena</span>'
+      : '<span><i class="c1"></i>Más barato que su barrio</span><span><i style="background:#d4af6a"></i>Resto</span>';
+    if (mapa) { mapa.area(null); mapa.props([], null, function () {}); }
+    if (v === 'zonas') { sel = null; render(true); return; }
+    if (mapa) mapa.pins([]);
+    if (!avisos) { $('oInfo').textContent = 'Cargando avisos…'; cargarAvisos().then(function () { cambiarVista(v); }); return; }
+    if (v === 'opor') renderOpor(true); else renderTasar();
+  }
+
+  /* --- oportunidades --- */
+  var filtro = { max: 0, barrio: '', m2: 0, dorm: '', coch: false, pozo: false, baja: false, orden: 'vs' };
+  function leerFiltro() {
+    filtro.max = parseInt(($('fMax').value || '').replace(/[^\d]/g, ''), 10) || 0;
+    filtro.m2 = parseInt(($('fM2').value || '').replace(/[^\d]/g, ''), 10) || 0;
+    filtro.barrio = $('fBarrio').value; filtro.orden = $('fOrden').value;
+    filtro.coch = $('fCoch').checked; filtro.pozo = $('fPozo').checked; filtro.baja = $('fBaja').checked;
+    try { ls('filtro', JSON.stringify(filtro)); } catch (e) { /* sin guardar */ }
+  }
+  function filtrar() {
+    var f = filtro;
+    var out = avisos.avisos.filter(function (a) {
+      if (f.max && a.p > f.max) return false;
+      if (f.barrio && a.z !== f.barrio) return false;
+      if (f.m2 && a.m2 < f.m2) return false;
+      if (f.dorm === '1' && a.dorm !== 1) return false;
+      if (f.dorm === '2' && a.dorm !== 2) return false;
+      if (f.dorm === '3' && !(a.dorm >= 3)) return false;
+      if (f.coch && !a.coch) return false;
+      if (!f.pozo && a.pozo) return false;
+      if (f.baja && !a.p_ant) return false;
+      return true;
+    });
+    var baja = function (a) { return a.p_ant ? (a.p_ant - a.p) / a.p_ant : 0; };
+    out.sort(function (a, b) {
+      if (f.orden === 'renta') return (b.renta || 0) - (a.renta || 0);
+      if (f.orden === 'baja') return baja(b) - baja(a) || a.vs - b.vs;
+      if (f.orden === 'precio') return a.p - b.p;
+      return a.vs - b.vs;
+    });
+    return out;
+  }
+  function tarjetaAviso(a) {
+    var tags = '';
+    if (a.vs <= -5) tags += '<span class="tag ok">' + a.vs + '% vs barrio</span>';
+    else if (a.vs >= 10) tags += '<span class="tag caro">+' + a.vs + '% vs barrio</span>';
+    else tags += '<span class="tag">' + (a.vs > 0 ? '+' : '') + a.vs + '% vs barrio</span>';
+    if (a.renta) tags += '<span class="tag">Renta ' + String(a.renta).replace('.', ',') + '%</span>';
+    if (a.p_ant) tags += '<span class="tag baja">Bajó ' + Math.round((a.p_ant - a.p) / a.p_ant * 100) + '%</span>';
+    if (a.estrenar) tags += '<span class="tag">A estrenar</span>';
+    if (a.pozo) tags += '<span class="tag caro">En pozo</span>';
+    var carac = [a.m2 + ' m²', a.dorm != null ? (a.dorm === 0 ? 'Monoamb.' : a.dorm + ' dorm.') : '', a.banos ? a.banos + ' baño' + (a.banos > 1 ? 's' : '') : '', a.coch ? 'Cochera' : ''].filter(Boolean).join(' · ');
+    return '<div class="aviso' + (selAviso === a.id ? ' sel' : '') + '" data-aviso="' + esc(a.id) + '">' +
+      '<div class="av-top"><b>USD ' + miles(a.p) + '</b>' + (a.p_ant ? '<s>USD ' + miles(a.p_ant) + '</s>' : '') + '<span class="av-m2">USD ' + miles(a.m2p) + '/m²</span></div>' +
+      '<div class="av-loc">' + esc(nombreZ(a.z)) + (a.dir ? ' · ' + esc(a.dir) : '') + '</div>' +
+      '<div class="av-car">' + esc(carac) + '</div>' +
+      '<div class="tags">' + tags + '</div>' +
+      '<div class="av-btns"><a class="btn" target="_blank" rel="noopener" href="' + esc(linkAviso(a)) + '">Ver aviso</a>' +
+      (a.lat ? '<button class="btn sec" data-mapa="' + esc(a.id) + '">Ver en el mapa</button>' : '<span class="sinmapa">Sin ubicación exacta</span>') + '</div></div>';
+  }
+  var oCache = [];
+  function renderOpor(encuadrar) {
+    leerFiltro();
+    oCache = filtrar();
+    var top = oCache.slice(0, 120);
+    $('oInfo').innerHTML = '<b>' + oCache.length + '</b> departamentos' + (oCache.length > 120 ? ' (te muestro los 120 primeros)' : '') +
+      ' · avisos de Zonaprop al ' + fechaTxt(avisos.fecha);
+    $('oLista').innerHTML = top.length ? top.map(tarjetaAviso).join('') +
+      '<p class="nota-av">"vs barrio" compara el precio por m² con la mediana de los departamentos en venta del mismo barrio. La renta es estimada con el alquiler promedio del barrio. Son precios publicados, no de cierre: revisá siempre el aviso, el estado y la documentación.</p>'
+      : '<p class="nota-av">No hay departamentos con esos filtros. Probá ampliar el presupuesto o sacar algún filtro.</p>';
+    $('fResumen').textContent = '· ' + oCache.length;
+    var conGeo = top.filter(function (a) { return a.lat; });
+    if (mapa) {
+      mapa.props(conGeo, selAviso, elegirAviso);
+      if (encuadrar) mapa.encuadrar(conGeo.map(function (a) { return [a.lat, a.lng]; }));
+    }
+  }
+  function elegirAviso(id) {
+    selAviso = id;
+    var a = avisos.avisos.filter(function (x) { return x.id === id; })[0];
+    if (document.body.classList.contains('sin-lista')) $('btnLista').click();
+    if (vista === 'opor') {
+      renderOpor(false);
+      var el = document.querySelector('.aviso[data-aviso="' + id + '"]');
+      if (el && el.scrollIntoView) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    } else if (vista === 'tasar') {
+      renderTasar(true);
+    }
+    if (a && a.lat && mapa) mapa.encuadrar([[a.lat, a.lng]]);
+  }
+
+  /* --- tasación --- */
+  function cuantil(v, q) { var s = v.slice().sort(function (a, b) { return a - b; }); var i = (s.length - 1) * q, lo = Math.floor(i); return s[lo] + (s[Math.ceil(i)] - s[lo]) * (i - lo); }
+  function renderTasar(sinEncuadre) {
+    var b = $('tBarrio').value, m2 = parseInt(($('tM2').value || '').replace(/[^\d]/g, ''), 10) || 0;
+    var d = parseInt($('tDorm').value, 10), coch = $('tCoch').value === '1';
+    try { ls('tasar', JSON.stringify({ b: b, m2: m2, d: d, c: coch })); } catch (e) { /* sin guardar */ }
+    if (!m2) { $('tRes').innerHTML = '<p class="nota-av">Cargá los m² cubiertos para calcular.</p>'; if (mapa) mapa.props([], null, elegirAviso); return; }
+    var base = avisos.avisos.filter(function (a) { return a.z === b && !a.pozo; });
+    var dist = function (a) { return Math.abs(a.m2 - m2) / m2 + (a.dorm === d || (d >= 3 && a.dorm >= 3) ? 0 : 0.35) + ((!!a.coch) === coch ? 0 : 0.12); };
+    var comps = base.filter(function (a) { return Math.abs(a.m2 - m2) / m2 <= 0.35; }).sort(function (x, y) { return dist(x) - dist(y); }).slice(0, 15);
+    var ampliado = false;
+    if (comps.length < 5) { comps = base.slice().sort(function (x, y) { return dist(x) - dist(y); }).slice(0, 15); ampliado = true; }
+    if (comps.length < 3) { $('tRes').innerHTML = '<p class="nota-av">Hay muy pocos departamentos parecidos publicados en este barrio para estimar un precio. Probá con otro barrio cercano.</p>'; return; }
+    var v = comps.map(function (a) { return a.m2p; });
+    var p25 = cuantil(v, 0.25), p50 = cuantil(v, 0.5), p75 = cuantil(v, 0.75);
+    var r = function (x) { return Math.round(x * m2 / 500) * 500; };
+    var similares = base.filter(function (a) { return Math.abs(a.m2 - m2) / m2 <= 0.2 && (a.dorm === d || (d >= 3 && a.dorm >= 3)); }).length;
+    var comp = similares >= 15 ? 'mucha' : similares >= 6 ? 'moderada' : 'poca';
+    $('tRes').innerHTML =
+      '<div class="rango">' +
+      '<div><span>Para vender rápido</span><b>USD ' + miles(r(p25)) + '</b></div>' +
+      '<div class="medio"><span>Precio de mercado</span><b>USD ' + miles(r(p50)) + '</b></div>' +
+      '<div><span>Precio alto</span><b>USD ' + miles(r(p75)) + '</b></div></div>' +
+      '<p class="t-txt">Calculado con <b>' + comps.length + ' departamentos parecidos</b> publicados en ' + esc(nombreZ(b)) + (ampliado ? ' (amplié el rango de m² porque había pocos)' : '') +
+      ': entre USD ' + miles(Math.round(p25)) + ' y ' + miles(Math.round(p75)) + ' por m². Hay <b>' + comp + ' competencia</b>: ' + similares + ' avisos muy parecidos al tuyo.' +
+      (comp === 'mucha' ? ' Para destacarte, publicá cerca del precio rápido.' : comp === 'poca' ? ' Tenés margen para publicar cerca del precio de mercado o algo más.' : '') + '</p>' +
+      '<p class="nota-av">Son precios de publicación; las ventas suelen cerrar por debajo. Para el precio final conviene la tasación de un corredor matriculado.</p>' +
+      '<div class="h-sec">Tu competencia</div>' + comps.map(tarjetaAviso).join('');
+    var conGeo = comps.filter(function (a) { return a.lat; });
+    if (mapa) {
+      mapa.props(conGeo, selAviso, elegirAviso);
+      if (!sinEncuadre) mapa.encuadrar(conGeo.map(function (a) { return [a.lat, a.lng]; }));
+    }
+  }
+
+  function eventosAvisos() {
+    [].forEach.call(document.querySelectorAll('.nv'), function (b) { b.onclick = function () { cambiarVista(b.getAttribute('data-vista')); }; });
+    var opts = data.zonas.map(function (z) { return '<option value="' + esc(z.id) + '">' + esc(z.nombre) + '</option>'; }).join('');
+    $('fBarrio').innerHTML = '<option value="">Todos</option>' + opts;
+    $('tBarrio').innerHTML = opts;
+    try {
+      var f = JSON.parse(ls('filtro') || 'null');
+      if (f) {
+        if (f.max) $('fMax').value = miles(f.max);
+        if (f.m2) $('fM2').value = f.m2;
+        $('fBarrio').value = f.barrio || ''; $('fOrden').value = f.orden || 'vs';
+        $('fCoch').checked = !!f.coch; $('fPozo').checked = !!f.pozo; $('fBaja').checked = !!f.baja;
+        filtro.dorm = f.dorm || '';
+      }
+      var t = JSON.parse(ls('tasar') || 'null');
+      if (t) { $('tBarrio').value = t.b; if (t.m2) $('tM2').value = t.m2; $('tDorm').value = String(t.d); $('tCoch').value = t.c ? '1' : '0'; }
+    } catch (e) { /* sin preferencias */ }
+    if (!$('fMax').value && presu) $('fMax').value = miles(presu);
+    [].forEach.call(document.querySelectorAll('#fDorm button'), function (b) {
+      b.classList.toggle('on', b.getAttribute('data-d') === filtro.dorm);
+      b.onclick = function () {
+        filtro.dorm = b.getAttribute('data-d');
+        [].forEach.call(document.querySelectorAll('#fDorm button'), function (x) { x.classList.toggle('on', x === b); });
+        renderOpor(true);
+      };
+    });
+    var numerico = function (el) { var n = parseInt(el.value.replace(/[^\d]/g, ''), 10) || 0; el.value = n ? (el.id === 'fMax' ? miles(n) : String(n)) : ''; };
+    var tO = null;
+    ['fMax', 'fM2'].forEach(function (id) { $(id).addEventListener('input', function () { numerico(this); clearTimeout(tO); tO = setTimeout(function () { renderOpor(true); }, 350); }); });
+    ['fBarrio', 'fOrden', 'fCoch', 'fPozo', 'fBaja'].forEach(function (id) { $(id).addEventListener('change', function () { renderOpor(true); }); });
+    var tT2 = null;
+    $('tM2').addEventListener('input', function () { numerico(this); clearTimeout(tT2); tT2 = setTimeout(function () { renderTasar(); }, 350); });
+    ['tBarrio', 'tDorm', 'tCoch'].forEach(function (id) { $(id).addEventListener('change', function () { renderTasar(); }); });
+    var clickAviso = function (e) {
+      var bm = e.target.closest('[data-mapa]');
+      if (bm) { elegirAviso(bm.getAttribute('data-mapa')); return; }
+    };
+    $('oLista').addEventListener('click', clickAviso);
+    $('tRes').addEventListener('click', clickAviso);
+    if (window.matchMedia && window.matchMedia('(max-width: 899px)').matches) $('filtros').open = false;
+  }
+
   /* ---------- actualización ---------- */
   function actualizar(manual) {
     if (!REMOTE) return;
@@ -303,7 +528,11 @@
     $('lista').addEventListener('click', function (e) { var c = e.target.closest('.card'); if (c) seleccionar(c.getAttribute('data-id')); });
     $('lista').addEventListener('keydown', function (e) { var c = e.target.closest('.card'); if (c && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); seleccionar(c.getAttribute('data-id')); } });
     $('hojaX').onclick = cerrarFicha;
-    $('btnTodo').onclick = function () { cerrarFicha(); };
+    $('btnTodo').onclick = function () {
+      if (vista === 'zonas') { cerrarFicha(); return; }
+      selAviso = null;
+      if (vista === 'opor') renderOpor(true); else renderTasar();
+    };
     $('btnEstilo').onclick = function () {
       oscuro = !oscuro; document.body.classList.toggle('oscuro', oscuro);
       $('btnEstilo').textContent = oscuro ? '☾ Oscuro' : '☀ Claro';
@@ -344,6 +573,8 @@
       .then(function () {
         if (ls('oscuro')) $('btnEstilo').click();
         render(true);
+        eventosAvisos();
+        cargarAvisos();
         setTimeout(function () { if (mapa) mapa.resize(); }, 300);
         if (!ls('vioAyuda')) $('dlgAyuda').hidden = false;
         actualizar(false);

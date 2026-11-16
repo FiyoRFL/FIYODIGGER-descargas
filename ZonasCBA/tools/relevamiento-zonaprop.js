@@ -21,7 +21,7 @@ window.__prog = 'start'; window.__res = {}; window.__avisos = []; window.__geoNe
   };
   const PAG_VENTA = ['', '-pagina-2', '-pagina-3', '-pagina-4', '-pagina-5'];
   const PAG_ALQ = ['', '-pagina-2'];
-  const MAX_GEO = 450;
+  const MAX_GEO = 150;
   const sleep = ms => new Promise(r => setTimeout(r, ms));
   const med = a => { if (!a.length) return null; const s = [...a].sort((x, y) => x - y); const m = Math.floor(s.length / 2); return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
   const num = t => parseInt(String(t).replace(/[^\d]/g, ''), 10);
