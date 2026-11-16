@@ -358,12 +358,14 @@
   }
 
   /* --- oportunidades --- */
-  var filtro = { max: 0, barrio: '', m2: 0, dorm: '', coch: false, pozo: false, baja: false, orden: 'vs' };
+  var filtro = { max: 0, barrio: '', m2: 0, dorm: '', coch: false, pozo: false, baja: false, dudosos: false, orden: 'vs' };
+  // avisos con números que no cierran (m² mal cargados, precio de anticipo, etc.)
+  function dudoso(a) { return a.vs <= -40 || a.p < 30000 || (a.renta && a.renta > 14); }
   function leerFiltro() {
     filtro.max = parseInt(($('fMax').value || '').replace(/[^\d]/g, ''), 10) || 0;
     filtro.m2 = parseInt(($('fM2').value || '').replace(/[^\d]/g, ''), 10) || 0;
     filtro.barrio = $('fBarrio').value; filtro.orden = $('fOrden').value;
-    filtro.coch = $('fCoch').checked; filtro.pozo = $('fPozo').checked; filtro.baja = $('fBaja').checked;
+    filtro.coch = $('fCoch').checked; filtro.pozo = $('fPozo').checked; filtro.baja = $('fBaja').checked; filtro.dudosos = $('fDud').checked;
     try { ls('filtro', JSON.stringify(filtro)); } catch (e) { /* sin guardar */ }
   }
   function filtrar() {
@@ -378,6 +380,7 @@
       if (f.coch && !a.coch) return false;
       if (!f.pozo && a.pozo) return false;
       if (f.baja && !a.p_ant) return false;
+      if (!f.dudosos && dudoso(a)) return false;
       return true;
     });
     var baja = function (a) { return a.p_ant ? (a.p_ant - a.p) / a.p_ant : 0; };
@@ -398,6 +401,7 @@
     if (a.p_ant) tags += '<span class="tag baja">Bajó ' + Math.round((a.p_ant - a.p) / a.p_ant * 100) + '%</span>';
     if (a.estrenar) tags += '<span class="tag">A estrenar</span>';
     if (a.pozo) tags += '<span class="tag caro">En pozo</span>';
+    if (dudoso(a)) tags += '<span class="tag caro">Datos dudosos: revisá el aviso</span>';
     var carac = [a.m2 + ' m²', a.dorm != null ? (a.dorm === 0 ? 'Monoamb.' : a.dorm + ' dorm.') : '', a.banos ? a.banos + ' baño' + (a.banos > 1 ? 's' : '') : '', a.coch ? 'Cochera' : ''].filter(Boolean).join(' · ');
     return '<div class="aviso' + (selAviso === a.id ? ' sel' : '') + '" data-aviso="' + esc(a.id) + '">' +
       '<div class="av-top"><b>USD ' + miles(a.p) + '</b>' + (a.p_ant ? '<s>USD ' + miles(a.p_ant) + '</s>' : '') + '<span class="av-m2">USD ' + miles(a.m2p) + '/m²</span></div>' +
@@ -447,7 +451,7 @@
     var d = parseInt($('tDorm').value, 10), coch = $('tCoch').value === '1';
     try { ls('tasar', JSON.stringify({ b: b, m2: m2, d: d, c: coch })); } catch (e) { /* sin guardar */ }
     if (!m2) { $('tRes').innerHTML = '<p class="nota-av">Cargá los m² cubiertos para calcular.</p>'; if (mapa) mapa.props([], null, elegirAviso); return; }
-    var base = avisos.avisos.filter(function (a) { return a.z === b && !a.pozo; });
+    var base = avisos.avisos.filter(function (a) { return a.z === b && !a.pozo && !dudoso(a); });
     var dist = function (a) { return Math.abs(a.m2 - m2) / m2 + (a.dorm === d || (d >= 3 && a.dorm >= 3) ? 0 : 0.35) + ((!!a.coch) === coch ? 0 : 0.12); };
     var comps = base.filter(function (a) { return Math.abs(a.m2 - m2) / m2 <= 0.35; }).sort(function (x, y) { return dist(x) - dist(y); }).slice(0, 15);
     var ampliado = false;
@@ -486,7 +490,7 @@
         if (f.max) $('fMax').value = miles(f.max);
         if (f.m2) $('fM2').value = f.m2;
         $('fBarrio').value = f.barrio || ''; $('fOrden').value = f.orden || 'vs';
-        $('fCoch').checked = !!f.coch; $('fPozo').checked = !!f.pozo; $('fBaja').checked = !!f.baja;
+        $('fCoch').checked = !!f.coch; $('fPozo').checked = !!f.pozo; $('fBaja').checked = !!f.baja; $('fDud').checked = !!f.dudosos;
         filtro.dorm = f.dorm || '';
       }
       var t = JSON.parse(ls('tasar') || 'null');
@@ -504,7 +508,7 @@
     var numerico = function (el) { var n = parseInt(el.value.replace(/[^\d]/g, ''), 10) || 0; el.value = n ? (el.id === 'fMax' ? miles(n) : String(n)) : ''; };
     var tO = null;
     ['fMax', 'fM2'].forEach(function (id) { $(id).addEventListener('input', function () { numerico(this); clearTimeout(tO); tO = setTimeout(function () { renderOpor(true); }, 350); }); });
-    ['fBarrio', 'fOrden', 'fCoch', 'fPozo', 'fBaja'].forEach(function (id) { $(id).addEventListener('change', function () { renderOpor(true); }); });
+    ['fBarrio', 'fOrden', 'fCoch', 'fPozo', 'fBaja', 'fDud'].forEach(function (id) { $(id).addEventListener('change', function () { renderOpor(true); }); });
     var tT2 = null;
     $('tM2').addEventListener('input', function () { numerico(this); clearTimeout(tT2); tT2 = setTimeout(function () { renderTasar(); }, 350); });
     ['tBarrio', 'tDorm', 'tCoch'].forEach(function (id) { $(id).addEventListener('change', function () { renderTasar(); }); });
