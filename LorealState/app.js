@@ -349,7 +349,7 @@
     $('hoja').hidden = true; selAviso = null;
     $('leyenda').innerHTML = v === 'zonas'
       ? '<span><i class="c1"></i>Excelente</span><span><i class="c2"></i>Muy buena</span><span><i class="c3"></i>Buena</span>'
-      : '<span><i class="c1"></i>Más barato que su barrio</span><span><i style="background:#d4af6a"></i>Resto</span><span>Translúcido: ubicación aprox.</span>';
+      : '<span><i class="c1"></i>Bajo su barrio</span><span><i style="background:#d4af6a"></i>Resto</span>';
     if (mapa) { mapa.area(null); mapa.props([], null, function () {}); }
     if (v === 'zonas') { sel = null; render(true); return; }
     if (mapa) mapa.pins([]);
