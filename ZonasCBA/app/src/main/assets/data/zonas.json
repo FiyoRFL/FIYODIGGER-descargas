@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "actualizado": "2026-11-15",
   "ciudad": "Córdoba capital",
   "nota": "Puntajes de referencia armados con fuentes públicas. No es asesoramiento financiero ni una tasación.",
@@ -100,8 +100,8 @@
         "Unas 140 obras en ejecución en el barrio (Mercado)"
       ],
       "portales": {
-        "zonaprop": "departamentos-venta-nueva-cordoba.html",
-        "argenprop": "departamentos/venta/nueva-cordoba",
+        "zonaprop": "inmuebles-venta-nueva-cordoba.html",
+        "argenprop": "inmuebles/venta/nueva-cordoba",
         "mercadolibre": "nueva-cordoba"
       },
       "precio": "Departamentos de USD 75 mil a 370 mil en avisos de Zonaprop (2026)"
@@ -129,6 +129,8 @@
         "m² construido: USD 1.500 a 2.500, el más alto de la ciudad (Roomix, 2026)"
       ],
       "portales": {
+        "zonaprop": "inmuebles-venta-cerro-de-las-rosas.html",
+        "argenprop": "inmuebles/venta/cerro-de-las-rosas",
         "mercadolibre": "cerro-de-las-rosas"
       },
       "precio": "Casas de unos USD 115 mil a 550 mil en una muestra de avisos de MercadoLibre (2026)"
@@ -155,6 +157,8 @@
         "Figura entre los barrios top junto a Nueva Córdoba y Cerro de las Rosas (Roomix, 2026)"
       ],
       "portales": {
+        "zonaprop": "inmuebles-venta-villa-belgrano-cordoba.html",
+        "argenprop": "inmuebles/venta/villa-belgrano-cor",
         "mercadolibre": "villa-belgrano"
       }
     },
@@ -180,6 +184,8 @@
         "Mayor track record de valorización de capital junto con el corredor noroeste (Roomix, 2026)"
       ],
       "portales": {
+        "zonaprop": "inmuebles-venta-valle-escondido.html",
+        "argenprop": "inmuebles/venta/valle-escondido",
         "mercadolibre": "valle-escondido"
       }
     },
@@ -206,6 +212,8 @@
       ],
       "precio": "Casa 3 ambientes con jardín: USD 150 a 250 mil (Roomix, 2026)",
       "portales": {
+        "zonaprop": "inmuebles-venta-urca.html",
+        "argenprop": "inmuebles/venta/urca",
         "mercadolibre": "urca"
       }
     },
@@ -234,6 +242,8 @@
       "busqueda": "Argüello",
       "precio": "Casa 3 ambientes en barrio cerrado: USD 120 a 200 mil (Roomix, 2026)",
       "portales": {
+        "zonaprop": "inmuebles-venta-arguello.html",
+        "argenprop": "inmuebles/venta/arguello",
         "mercadolibre": "arguello"
       }
     },
@@ -260,6 +270,8 @@
         "Unas 70 obras en ejecución (Mercado)"
       ],
       "portales": {
+        "zonaprop": "inmuebles-venta-general-paz-cordoba.html",
+        "argenprop": "inmuebles/venta/general-paz-cor-cc",
         "mercadolibre": "general-paz"
       }
     },
@@ -285,6 +297,8 @@
         "Entre las zonas calientes de inversión en departamentos (Perfil)"
       ],
       "portales": {
+        "zonaprop": "inmuebles-venta-cofico.html",
+        "argenprop": "inmuebles/venta/cofico",
         "mercadolibre": "cofico"
       }
     },
@@ -310,6 +324,8 @@
         "Mejor ecuación precio-rendimiento junto con General Paz (Roomix, 2026)"
       ],
       "portales": {
+        "zonaprop": "inmuebles-venta-alberdi-cordoba.html",
+        "argenprop": "inmuebles/venta/alberdi-cor",
         "mercadolibre": "alberdi"
       }
     },
@@ -335,6 +351,8 @@
         "Señalado como la apuesta en crecimiento (Roomix, 2026)"
       ],
       "portales": {
+        "zonaprop": "inmuebles-venta-alta-cordoba.html",
+        "argenprop": "inmuebles/venta/alta-cordoba",
         "mercadolibre": "alta-cordoba"
       }
     }

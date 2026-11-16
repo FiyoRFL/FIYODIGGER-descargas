@@ -217,9 +217,9 @@
 
   function portales(z) {
     var p = z.portales || {}, out = '';
-    if (p.mercadolibre) out += '<a class="portal ml" target="_blank" rel="noopener" href="https://inmuebles.mercadolibre.com.ar/venta/cordoba/cordoba/' + encodeURIComponent(p.mercadolibre) + '/">MercadoLibre</a>';
     if (p.zonaprop) out += '<a class="portal zp" target="_blank" rel="noopener" href="' + esc('https://www.zonaprop.com.ar/' + p.zonaprop) + '">Zonaprop</a>';
     if (p.argenprop) out += '<a class="portal ap" target="_blank" rel="noopener" href="' + esc('https://www.argenprop.com/' + p.argenprop) + '">Argenprop</a>';
+    if (p.mercadolibre) out += '<a class="portal ml" target="_blank" rel="noopener" href="https://inmuebles.mercadolibre.com.ar/venta/cordoba/cordoba/' + encodeURIComponent(p.mercadolibre) + '/">MercadoLibre</a>';
     return out ? '<div class="h-sec">Propiedades en venta con precio</div><div class="portales">' + out + '</div>' : '';
   }
 
@@ -289,6 +289,11 @@
       if (mapa) mapa.estilo(oscuro); ls('oscuro', oscuro ? '1' : null);
     };
     $('btnRefresh').onclick = function () { actualizar(true); };
+    $('btnLista').onclick = function () {
+      var oculto = document.body.classList.toggle('sin-lista');
+      $('btnLista').textContent = oculto ? '☰ Ver zonas' : '⤢ Mapa completo';
+      setTimeout(function () { if (mapa) mapa.resize(); }, 260);
+    };
     $('btnAyuda').onclick = function () { $('dlgAyuda').hidden = false; };
     $('dlgOk').onclick = function () { $('dlgAyuda').hidden = true; ls('vioAyuda', '1'); };
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { if (!$('dlgAyuda').hidden) $('dlgAyuda').hidden = true; else if (sel) cerrarFicha(); } });

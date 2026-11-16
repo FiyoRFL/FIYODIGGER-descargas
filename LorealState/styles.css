@@ -127,3 +127,8 @@ body.oscuro .mbtn,body.oscuro .leyenda{background:#151a23ee;color:var(--txt);bor
   .hoja{left:auto;right:20px;bottom:20px;width:420px}
   .hoja-card{border-radius:18px;max-height:calc(100vh - var(--top) - 60px)}
 }
+
+/* mapa completo: oculta la lista de zonas */
+body.sin-lista .panel{display:none}
+body.sin-lista .mapa{flex:1 1 auto}
+.portales{grid-template-columns:repeat(3,1fr)}
